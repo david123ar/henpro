@@ -1,0 +1,121 @@
+/* --- ContinueWatching Component Styles --- */
+:root {
+    --grey-dark: #333333; /* Dark background for pagination tiles */
+    --text-light: rgb(160, 163, 159); /* Text color for inactive pagination */
+    /* Assuming --theme is defined globally, e.g., --theme: #00f2fe; */
+}
+
+/* Main Layout */
+.contiAll {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%; /* Ensure it takes full width */
+}
+
+/* History Header Container */
+.conticFa {
+    display: flex;
+    align-items: center;
+    /* FIX: Use margin/padding for spacing rather than width hacks */
+    width: 75%; 
+    max-width: 1200px; /* Optional: cap the width for large screens */
+    margin: 0 auto;
+    justify-content: flex-start;
+    padding-left: 0;
+}
+
+/* History Header Text and Icon */
+.contic {
+    display: flex;
+    align-items: center;
+    font-size: 30px;
+    padding: 20px 0;
+    gap: 10px;
+    font-weight: 600;
+    color: var(--text-primary, white); /* Use a standard text color */
+}
+
+/* Card Container Wrapper */
+.midd {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* FIX: Use max-width for cleaner responsive control */
+    width: 75%;
+    max-width: 1200px; /* Should match conticFa */
+    margin: 0 auto;
+    padding: 0;
+}
+
+/* Pagination Container */
+.paginA {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 50px;
+    margin-bottom: 20px;
+}
+
+/* Pagination Tile (Button/Link) */
+.pagin-tile {
+    height: 40px; /* Slightly smaller for a modern look */
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--grey-dark);
+    color: var(--text-light);
+    border-radius: 50%;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+.pagin-tile:hover {
+    color: var(--theme);
+    background: var(--grey-dark);
+    cursor: pointer;
+}
+
+/* Active Pagination Tile */
+.pagin-colo {
+    background: var(--theme, #00f2fe);
+    color: black;
+}
+.pagin-colo:hover {
+    background: var(--theme, #00f2fe);
+    color: black;
+}
+
+/* --- Responsive Adjustments --- */
+@media screen and (max-width: 1150px) {
+    .conticFa,
+    .midd {
+        width: 90%; /* Increase width to fill more screen */
+        padding-left: 0;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .conticFa,
+    .midd {
+        width: 95%; 
+    }
+}
+
+@media screen and (max-width: 476px) {
+    .contic {
+        font-size: 24px;
+        padding-top: 15px;
+    }
+    .pagin-tile {
+        height: 35px;
+        width: 35px;
+        font-size: 14px;
+    }
+    .paginA {
+        gap: 5px;
+        margin-top: 30px;
+    }
+}

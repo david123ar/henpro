@@ -1,0 +1,292 @@
+.crype-wrapper {
+  padding: 40px 20px;
+  /* background: #0f0f0f; */
+  color: #fff;
+  font-family: "Poppins", sans-serif;
+}
+
+.crype-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.crype-title {
+  position: relative;
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 700;
+  border-left: 3px solid #ff9741;
+  padding-left: 15px;
+  line-height: 1.2;
+  overflow: hidden;
+}
+
+.crype-title::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 2px; /* aligns with the border */
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 151, 65, 0.6) 0%,
+    rgba(255, 151, 65, 0.15) 30%,
+    rgba(255, 151, 65, 0) 100%
+  );
+  filter: blur(10px);
+  z-index: 0;
+  transform: translateX(-80%);
+  animation: swipeRay 2.5s ease-in-out infinite;
+}
+
+.crype-title span {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes swipeRay {
+  0% {
+    transform: translateX(-80%);
+  }
+  50% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-80%);
+  }
+}
+
+
+
+.crype-all {
+  font-size: 14px;
+  padding: 6px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  color: #ccc;
+  transition: all 0.3s;
+}
+.crype-all:hover {
+  color: #ff9741;
+  border-color: #ff9741;
+}
+
+.crype-nav-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.crype-nav-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.crype-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.crype-btn:hover {
+  color: #ff9741;
+  /* transform: scale(1.1); */
+}
+
+.crype-card-inner {
+  position: relative;
+  /* border-radius: 12px; */
+  overflow: hidden;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.crype-card-inner:hover {
+  transform: translateY(-6px) scale(1.05);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.6);
+}
+
+.crype-image-wrapper {
+  position: relative;
+  display: block;
+  /* border-radius: 12px; */
+}
+
+.crype-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* border-radius: 12px; */
+  transition: transform 0.3s ease;
+}
+
+/* Label Top Left */
+
+.crype-tag {
+  position: absolute;
+  padding: 3px 6px;
+  border-radius: 8px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 2;
+}
+
+/* Top and bottom opposite placement */
+.crype-tag.top {
+  top: 10px;
+  left: 10px;
+}
+
+.crype-tag.bottom {
+  bottom: 0;
+  right: 0;
+  border-radius: 0;
+  border-top-left-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.crype-label {
+  top: 8px;
+  left: 8px;
+  background: #ff9741;
+}
+
+/* Year Bottom Right */
+.crype-year {
+  bottom: 8px;
+  right: 8px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Title below card */
+.crype-title-below {
+  margin-top: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ff9741;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* Responsive */
+@media (max-width: 1000px) {
+  .crype-title {
+    font-size: 1.5rem;
+  }
+  /* .crype-title-below {
+    font-size: 14px;
+  } */
+  .crype-btn {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (max-width: 700px) {
+  .crype-wrapper {
+    padding: 20px 3%;
+  }
+}
+
+@media (max-width: 500px) {
+  .crype-title {
+    font-size: 1.2rem;
+    /* border: 0; */
+    padding: 0 10px;
+  }
+  .crype-all {
+    font-size: 13px;
+    padding: 4px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    color: #ccc;
+    transition: all 0.3s;
+  }
+  .crype-btn {
+    width: 25px;
+    height: 25px;
+    font-size: 13px;
+    border-radius: 50%;
+    border: none;
+    /* background: rgba(255, 255, 255, 0.05); */
+    border: 1px solid #fff;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .crype-header {
+    align-items: center;
+  }
+}
+
+/* Overlay & Play Icon Animation */
+.crype-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+  z-index: 3;
+}
+
+.crype-play-icon {
+  font-size: 3rem;
+  color: #ff9741;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  filter: drop-shadow(0 0 10px rgba(255, 151, 65, 0.6));
+}
+
+/* Hover Effects */
+.crype-card-inner:hover .crype-overlay {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.crype-card-inner:hover .crype-play-icon {
+  opacity: 1;
+  transform: scale(1.2);
+  animation: pulsePlay 1.2s infinite ease-in-out;
+}
+
+/* Glowing Pulse Animation */
+@keyframes pulsePlay {
+  0% {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 10px rgba(255, 151, 65, 0.5));
+  }
+  50% {
+    transform: scale(1.25);
+    filter: drop-shadow(0 0 20px rgba(255, 151, 65, 0.9));
+  }
+  100% {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 10px rgba(255, 151, 65, 0.5));
+  }
+}
+

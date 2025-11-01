@@ -1,0 +1,296 @@
+/* --- CSS Variables (Centralized Theme) --- */
+:root {
+    --theme-color: #ff9741; /* Your accent color (Orange/Gold) */
+    --dark-bg-main: #141414; /* Background for site-details */
+    --dark-bg-footer: #17181a; /* Background for .foot (copyright bar) */
+    --text-primary: #ffffff; /* White text for headings */
+    --text-secondary: rgba(182, 175, 175, 0.8); /* Faded text for body */
+    --text-copyright: grey; /* Text for copyright */
+    --scrollbar-track: #2d2d2d;
+}
+
+/* ------------------------------------------- */
+/* --- 1. Base Layout and Container Styles --- */
+/* ------------------------------------------- */
+.margino {
+    margin-top: 100px;
+}
+
+/* Site Details Container (Main Content Area) */
+.site-details {
+    /* Base styles from media query, applied globally for large screens */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    height: 37.5vh; /* Controlled height */
+    background-color: var(--dark-bg-main);
+    margin: 0 auto;
+    padding: 20px;
+    z-index: 1;
+    /* Removed redundant `position: relative` here as it's set below */
+}
+
+/* Gradient Overlay - ENHANCED */
+.site-details::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Subtle vertical fade-out effect */
+    background: linear-gradient(to bottom, rgba(20, 20, 20, 0) 5%, rgba(20, 20, 20, 0.7) 100%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Image Container */
+.imo {
+    /* Use fixed px or relative widths (e.g., 25%) but avoid mixing with scrollable heights (vh) on the parent */
+    width: 25%;
+    height: 37.5vh; /* Keep height consistent with parent */
+    display: flex;
+    align-items: flex-end; /* Align image to the bottom */
+    justify-content: flex-end;
+    margin-right: 70px;
+    flex-shrink: 0; /* Prevents shrinking */
+    z-index: 2;
+}
+
+.site-image {
+    /* Sticker Image container */
+    position: relative;
+    z-index: 2;
+}
+
+.site-image img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    /* Added subtle polish/shadow */
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5)); 
+    transition: transform 0.3s ease;
+}
+.site-image img:hover {
+    transform: scale(1.03);
+}
+
+/* Site Lines Container (Text Content) */
+.site-lines {
+    /* FIX: Use column flex layout for stacking text blocks */
+    display: flex;
+    flex-direction: column;
+    /* FIX: Set width relative to its parent flex container */
+    width: 50%;
+    height: 24.5vh; /* Controlled height for scroll */
+    overflow-y: scroll;
+    /* FIX: Ensure no unwanted negative margin by default */
+    margin-left: 0; 
+    
+    /* FIX: REMOVE flex-wrap: wrap; as column is used */
+}
+
+/* Text Element Spacing and Styling (NO GAPS) */
+.line-head {
+    font-size: 27px;
+    font-weight: 500;
+    line-height: 1.3; /* Adjusted for better readability */
+    color: var(--text-primary);
+    
+    /* FIX: Remove all margin and use padding for controlled spacing */
+    margin: 0;
+    padding-top: 15px; /* Space before the new section header */
+}
+.site-lines .line-head:first-child {
+    padding-top: 0; /* First header starts flush */
+}
+
+.line-inn {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.6; /* Better line height for body text */
+    color: var(--text-secondary);
+    
+    /* FIX: Remove all margin and use padding for controlled spacing */
+    margin: 0;
+    padding-top: 10px; /* Small space after the header/previous line */
+}
+
+.col-imp {
+    color: var(--theme-color);
+    font-weight: 700; /* Made accent text stand out more */
+}
+
+/* ------------------------------------ */
+/* --- 2. Scrollbar Customization --- */
+/* ------------------------------------ */
+/* WebKit scrollbar customization */
+.site-lines::-webkit-scrollbar {
+    width: 10px; /* Slightly narrower scrollbar */
+}
+
+.site-lines::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+    border-radius: 10px;
+}
+
+.site-lines::-webkit-scrollbar-thumb {
+    background: var(--theme-color);
+    border-radius: 10px;
+}
+
+.site-lines::-webkit-scrollbar-thumb:hover {
+    background: #fff;
+}
+
+/* Firefox scrollbar customization */
+.site-lines {
+    scrollbar-width: thin;
+    scrollbar-color: var(--theme-color) var(--scrollbar-track);
+}
+
+
+/* ------------------------------------- */
+/* --- 3. Copyright Footer Section --- */
+/* ------------------------------------- */
+.foot {
+    background: var(--dark-bg-footer);
+    width: 100%;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    /* Reduced vertical padding for a cleaner bar, keep it consistent */
+    padding: 30px 50px; 
+    /* Added subtle top border for distinction */
+    border-top: 2px solid rgba(255, 255, 255, 0.05); 
+}
+
+.flx {
+    display: flex;
+    /* Add right margin to separate logo from text */
+    margin-right: 20px; 
+}
+
+.headi {
+    font-size: 25px;
+    font-weight: 700; /* Made site name bolder */
+    color: var(--text-primary);
+}
+
+.col-p {
+    color: var(--theme-color);
+}
+
+.copyright-text {
+    color: var(--text-copyright);
+    font-size: 14px;
+    line-height: 1.5; /* Improved line height */
+}
+
+
+/* -------------------------------------- */
+/* --- 4. Responsive Design (FIXED) --- */
+/* -------------------------------------- */
+
+/* Styles for screens up to 2700px (Default for large/medium monitors) */
+@media screen and (max-width: 2700px) {
+    .site-details {
+        /* This is the base desktop layout, fixed at the top */
+        height: 37.5vh;
+    }
+    .imo {
+        width: 30%; /* Slightly wider image container */
+        height: 37.5vh;
+    }
+    .site-lines {
+        width: 50%;
+        height: 24.5vh;
+        /* FIX: Adjusted margin based on visual need, but better to use gap/flexbox if possible */
+        margin-left: -125px; 
+    }
+}
+
+/* Styles for screens up to 1549px (Smaller desktop/large tablet landscape) */
+@media screen and (max-width: 1549px) {
+    .site-lines {
+        width: 70%;
+    }
+    /* Removed .text-overlay styles as it seems to be for another component (hero-image) */
+}
+
+/* Styles for screens up to 1200px (Medium tablet landscape) */
+@media screen and (max-width: 1200px) {
+    .imo {
+        width: 40%;
+    }
+    /* Removed hero-image, texto, imgol, and text-overlay styles */
+}
+
+/* Styles for screens up to 1000px (Tablet/Small Laptop - STACKING POINT) */
+@media screen and (max-width: 1000px) {
+    .site-details {
+        /* Change to vertical stack */
+        flex-direction: column;
+        align-items: center;
+        height: auto; /* Allow height to expand */
+        padding: 40px 20px;
+    }
+    .imo, .site-image {
+        /* Hide image for this size as requested */
+        display: none;
+    }
+    .site-lines {
+        /* Allow full width for text and remove negative margin */
+        width: 100%;
+        margin-left: 0;
+        height: 30vh; /* Controlled scroll height, adjusted for more viewable space */
+        padding: 0 15px; /* Inner padding for edges */
+    }
+    .margino {
+        margin-top: 10px;
+    }
+    .foot {
+        /* Stack copyright bar items vertically */
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+        gap: 10px;
+    }
+    .flx {
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+}
+
+/* Styles for screens up to 750px */
+@media screen and (max-width: 750px) {
+    .line-head {
+        font-size: 24px;
+        line-height: 1.3;
+        padding-top: 10px;
+    }
+    .line-inn {
+        font-size: 16px;
+        line-height: 1.5;
+        padding-top: 8px;
+    }
+    .foot {
+        padding-left: 15px;
+    }
+}
+
+/* Styles for screens up to 570px */
+@media screen and (max-width: 570px) {
+    .site-lines {
+        height: 35vh; /* Increased scroll area on smaller screens */
+    }
+    .line-head {
+        font-size: 18px;
+    }
+    .line-inn {
+        font-size: 13px;
+    }
+}
+
+/* NOTE: Removed media queries below 570px that only targeted unrelated classes (text-overlay, hero-image, texto) */

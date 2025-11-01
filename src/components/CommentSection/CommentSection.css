@@ -1,0 +1,531 @@
+/* Custom Theme Color Definition */
+:root {
+  --primary-color: #ff9741; /* Your Brand Orange: ff9741 */
+  --secondary-color: #f7a760; /* Slightly lighter for hover (subtle change) */
+  --like-color: #38c172; /* Subtle Green for Likes (Good Contrast) */
+  --dislike-color: #e3342f; /* Subtle Red for Dislikes */
+  --bg-dark: #121212;
+  --bg-darker: #1e1e1e;
+  --border-dark: #333333;
+  --text-light: #e0e0e0;
+  --text-subtle: #888888;
+}
+
+/* ======================================================================
+    1. General Section Styling (Dark Theme & Color Update)
+    ====================================================================== */
+.comment-section-container {
+  /* max-width: 800px; */
+  /* margin: 0 auto; */
+  padding: 20px;
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  font-family: Arial, sans-serif;
+}
+
+.comment-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ffffff;
+  border-bottom: 2px solid var(--border-dark);
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+/* ======================================================================
+    2. Sorting and Filter Controls (NEW SECTION - PERFECT ALIGNMENT)
+    ====================================================================== */
+.sorting-controls-container {
+  display: flex;
+  justify-content: flex-start; /* Aligns left */
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+  padding: 0 0 10px 0;
+  border-bottom: 1px solid var(--border-dark);
+}
+
+.sort-label {
+  color: var(--text-subtle);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.sort-dropdown {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-dark);
+  background-color: var(--bg-darker);
+  color: var(--text-light);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  /* Orange focus ring when active */
+  outline: none;
+  transition: border-color 0.2s;
+  appearance: none; /* Hide default dropdown arrow for better custom styling */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23e0e0e0'%3E%3Cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.21 8.27a.75.75 0 01.02-1.06z' clip-rule='evenodd' /%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 28px; /* Make space for the custom arrow */
+}
+
+.sort-dropdown:hover,
+.sort-dropdown:focus {
+  border-color: var(--primary-color);
+}
+
+/* Specific styling for dropdown options */
+.sort-dropdown option {
+  background-color: var(--bg-darker);
+  color: var(--text-light);
+  padding: 8px;
+}
+
+/* ======================================================================
+    3. Comment Form Styling (Color Update)
+    ====================================================================== */
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.comment-form textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #444444;
+  border-radius: 8px;
+  resize: vertical;
+  min-height: 80px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  background-color: var(--bg-darker);
+  color: var(--text-light);
+  transition: border-color 0.2s;
+}
+
+.comment-form textarea:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+.comment-form button {
+  /* Using your theme color: ff9741 */
+  background-color: var(--primary-color);
+  color: var(--bg-dark); /* Dark text on bright button */
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background-color 0.3s;
+  align-self: flex-end;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+}
+
+.comment-form button:hover:not(:disabled) {
+  background-color: var(--secondary-color);
+}
+
+.comment-form button:disabled {
+  background-color: #444444;
+  color: #888888;
+  cursor: not-allowed;
+}
+
+.login-prompt {
+  background-color: var(--bg-darker);
+  border: 1px solid var(--border-dark);
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.login-link {
+  /* Using your theme color */
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.login-link:hover {
+  text-decoration: underline;
+}
+
+/* ======================================================================
+    4. Individual Comment Styling
+    ====================================================================== */
+.comment-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.comment-card {
+  padding: 10px 0;
+  margin-bottom: 15px;
+  background-color: transparent;
+  position: relative;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+  font-size: 0.95rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-avatar {
+  border-radius: 50%;
+  object-fit: cover;
+  width: 30px !important;
+  height: 30px !important;
+}
+
+.user-name {
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.comment-date {
+  color: var(--text-subtle);
+  font-size: 0.75rem;
+}
+
+.comment-text {
+  /* Aligns text with the user name/actions area. 38px is Avatar (30px) + Gap (8px) */
+  margin: 0 0 5px 38px;
+  line-height: 1.4;
+  color: var(--text-light);
+  word-wrap: break-word;
+}
+
+/* Styles for the @mention in a reply */
+.reply-target {
+  /* Use primary color for mention */
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-right: 5px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.reply-link {
+  cursor: pointer;
+  padding-right: 4px;
+  color: var(--text-subtle); /* Neutral color for reply action */
+  transition: color 0.2s;
+}
+.reply-link:hover {
+  text-decoration: underline;
+  color: var(--primary-color); /* Highlight on hover */
+}
+
+/* ======================================================================
+    5. Comment Actions & Form (Color Update)
+    ====================================================================== */
+.comment-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 5px;
+  margin-left: 38px; /* Align actions with the text */
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  color: var(--text-subtle);
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.action-btn:hover {
+  color: var(--text-light);
+}
+
+.like-btn.active {
+  color: var(--like-color); /* Subtle Green for active like */
+}
+.dislike-btn.active {
+  color: var(--dislike-color); /* Subtle Red for active dislike */
+}
+
+.reply-form {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  margin-left: 38px;
+  align-items: flex-end; /* Align buttons to the bottom of the form */
+}
+
+.reply-form textarea {
+  flex-grow: 1;
+  padding: 8px;
+  border: 1px solid #444444;
+  border-radius: 6px;
+  min-height: 40px;
+  background-color: var(--bg-darker);
+  color: var(--text-light);
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.reply-form textarea:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+.reply-form button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.reply-form button:first-of-type {
+  /* Primary Action Button (Post Reply) */
+  background-color: var(--primary-color);
+  color: var(--bg-dark);
+}
+.reply-form button:first-of-type:hover {
+  background-color: var(--secondary-color);
+}
+
+.reply-form button.cancel-reply-btn {
+  background-color: #444444;
+  color: var(--text-light);
+}
+.reply-form button.cancel-reply-btn:hover {
+  background-color: #555555;
+}
+
+/* ======================================================================
+    6. Flat Threaded Layout & View More Button
+    ====================================================================== */
+.comment-replies {
+  margin-top: 10px;
+}
+
+/* Reset and shared styling */
+.comment-card[class*="depth-"] {
+  margin-left: 0 !important;
+  background-color: transparent;
+  padding: 8px 0;
+}
+
+/* Depth 1 and above → shift by 20px with vertical line */
+/* .comment-card.depth-1 {
+  padding-left: 20px;
+  border-left: 1px solid var(--border-dark);
+} */
+
+.reply-control-actions {
+  margin-left: 0px;
+  margin-top: 10px;
+  padding-bottom: 5px;
+}
+
+.view-more-replies-btn {
+  background: none;
+  border: none;
+  /* Primary color for links/actions */
+  color: var(--primary-color);
+  cursor: pointer;
+  padding: 0;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: color 0.2s;
+  text-decoration: none;
+  /* Align button with the comment text/actions (38px offset) */
+  margin-left: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.view-more-replies-btn:hover {
+  text-decoration: underline;
+  color: var(--secondary-color);
+}
+
+/* ======================================================================
+    7. Utility/Loading States
+    ====================================================================== */
+.loading-state {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-style: italic;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.load-more-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--bg-darker);
+  border: 1px solid var(--border-dark);
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--primary-color);
+  font-weight: 600;
+  transition: background-color 0.2s, border-color 0.2s;
+  margin-top: 10px;
+}
+
+.load-more-btn:hover:not(:disabled) {
+  background-color: #282828;
+}
+
+.load-more-btn:disabled {
+  background-color: #1e1e1e;
+  color: #444444;
+  cursor: wait;
+}
+
+@media (max-width: 600px) {
+  .comment-text {
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 8px 10px;
+  }
+  .comment-card {
+    padding: 12px;
+  }
+  .comment-actions {
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  .comment-action-btn {
+    flex: 1 1 45%;
+    font-size: 13px;
+  }
+  .user-name {
+    font-size: 13px;
+  }
+}
+
+/* Media Query for small screens */
+@media (max-width: 480px) {
+  .comment-section-container {
+    padding: 10px;
+  }
+
+  /* Adjust core element alignment to save more horizontal space */
+  /* This margin ensures the text/actions start past the 30px avatar area */
+  .comment-text,
+  .comment-actions,
+  .reply-form,
+  .view-more-replies-btn {
+    margin-left: 38px; /* Consistent margin for mobile and desktop for simplicity */
+  }
+
+  /* Small screen indentation adjustment */
+  /* .comment-card.depth-1 {
+    padding-left: 15px;
+  } */
+
+  .comment-replies {
+    /* No additional padding needed, the depth-1 card handles indentation */
+    padding-left: 0;
+  }
+}
+
+/* CommentSection.css */
+
+/* Define the spin animation used for loading states */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+/* Set CSS variable for the theme accent color */
+:root {
+  /* Use the same value as GLOW_ACCENT: #00FFFF */
+  --glow-accent: #00ffff;
+}
+
+/* 1. KEYFRAME ANIMATION for Pulsing Glow */
+@keyframes highlightPulse {
+  0% {
+    box-shadow: 0 0 15px 3px rgba(0, 255, 255, 0.5),
+      inset 0 0 5px rgba(0, 255, 255, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 25px 5px rgba(0, 255, 255, 0.8),
+      inset 0 0 10px rgba(0, 255, 255, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 15px 3px rgba(0, 255, 255, 0.5),
+      inset 0 0 5px rgba(0, 255, 255, 0.4);
+  }
+}
+
+/* 2. TARGET HIGHLIGHT CLASS */
+/* This class is applied by the Comment component when its ID matches the URL hash */
+.comment-card.highlight-target {
+  /* Increase z-index to ensure it sits above other comments visually */
+  z-index: 10;
+
+  /* Apply a distinct background to ensure visibility */
+  background-color: #0b2e3c !important;
+
+  /* Strong border for immediate notice */
+  border: 2px solid var(--glow-accent) !important;
+
+  /* Apply the animation to make it pulse */
+  animation: highlightPulse 2s ease-in-out infinite alternate;
+
+  /* Padding adjustment if needed due to border change */
+  padding: 15px !important;
+}

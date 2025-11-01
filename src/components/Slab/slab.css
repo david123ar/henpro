@@ -1,0 +1,190 @@
+/* Variables (for consistency with previous components) */
+:root {
+  --primary-color: #ff9741;
+  --dark-bg: #0d0d0d;
+  --light-text: #e0e0e0;
+  --faded-text: #999999;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* 1. Main Container with Glassmorphism Effect */
+.profile-slab-header {
+  position: relative;
+  /* margin-top: 60px; Space below the sticky navbar */
+  padding: 20px 0; /* Vertical padding */
+  width: 100%;
+  min-height: 180px; /* Ensure enough height for the background blur */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end; /* Push content to the bottom */
+  color: var(--light-text);
+  z-index: 1;
+}
+
+/* 1a. Background Image (The blurred source) */
+.slab-background-img {
+  position: absolute;
+  z-index: -2; /* Below the overlay and content */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.6) saturate(1.2); /* Darken and slightly enhance image */
+  transform: scale(1.05); /* Avoid white edges during filter application */
+}
+
+/* 1b. Glass Overlay (The core of the effect) */
+.profile-slab-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  /* Glassmorphism/Blur Effect */
+  backdrop-filter: blur(15px) brightness(0.7); /* Stronger blur and darken the background image */
+  -webkit-backdrop-filter: blur(15px) brightness(0.7);
+  background: rgba(10, 10, 10, 0.6); /* Slightly darker tint */
+  border-bottom: 2px solid var(--primary-color);
+  box-shadow: var(--glass-shadow);
+  z-index: -1;
+}
+
+/* 2. Content (Greeting and Nav) */
+.slab-content {
+  position: relative;
+  width: 100%;
+  max-width: 1200px; /* Optional: Constrain width for large screens */
+  padding: 0 30px 10px 30px; /* Padding for inner content */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 2a. Greeting Text */
+.slab-greeting {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 800;
+  margin-bottom: 25px;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  color: #fff;
+}
+
+/* 3. Navigation Links Container */
+.slab-nav-links {
+  display: flex;
+  justify-content: center;
+  gap: 40px; /* Increased spacing */
+}
+
+/* 3a. Individual Link Item */
+.nav-link-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  padding: 10px 0;
+  color: var(--light-text);
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+/* Active Link State */
+.active-link {
+  color: var(--primary-color) !important;
+}
+
+/* Animated Underline for Active/Hover */
+.nav-link-item::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 3px;
+  background: var(--primary-color);
+  transition: width 0.3s ease, left 0.3s ease;
+}
+
+.nav-link-item:hover::after,
+.active-link::after {
+  width: 100%;
+  left: 0;
+}
+
+/* Icon Styling */
+.nav-icon {
+  font-size: 24px;
+  margin-bottom: 5px;
+  color: var(--faded-text);
+  transition: color 0.3s ease;
+}
+
+.nav-link-item:hover .nav-icon,
+.active-link .nav-icon {
+  color: var(--primary-color);
+}
+
+/* Special color for the Monetize icon */
+.monetize-icon {
+  color: #2ecc71; /* Green color for the money icon */
+}
+.nav-link-item:hover .monetize-icon {
+  color: var(--primary-color); /* Use theme color on hover */
+}
+
+.nav-label {
+  white-space: nowrap;
+}
+
+/* 4. Responsive Rules */
+@media screen and (max-width: 900px) {
+  .slab-nav-links {
+    gap: 30px;
+  }
+}
+
+@media screen and (max-width: 760px) {
+  .slab-greeting {
+    display: none; /* Hide greeting to save space */
+  }
+
+  .profile-slab-header {
+    min-height: 100px;
+    padding-bottom: 5px;
+  }
+
+  .slab-content {
+    padding: 0 10px 5px 10px;
+  }
+
+  .slab-nav-links {
+    gap: 15px; /* Tighter spacing for mobile */
+  }
+
+  .nav-label {
+    display: none; /* Hide text label on small screens */
+  }
+
+  .nav-link-item {
+    padding: 10px 5px;
+  }
+
+  .nav-icon {
+    font-size: 20px; /* Smaller icons */
+    margin-bottom: 0;
+  }
+
+  /* Active underline transition remains */
+  .nav-link-item::after {
+    bottom: -5px; /* Move underline below the icon */
+  }
+}

@@ -1,0 +1,375 @@
+:root {
+  --theme: #ff9741; /* New vibrant orange theme color */
+  --theme-hover: #ffad68; /* Slightly lighter orange for hover state */
+  --text-color-primary: #f8f8f8; /* Light color for most text */
+  --text-color-secondary: #c0c0c0; /* Lighter color for labels/hints */
+  --bg-dark: rgba(22, 22, 22, 0.9); /* Darker background for the modal content */
+  --bg-white: #ffffff; /* White background for inputs */
+  --input-text-color: #1a1a1a; /* Dark text for inputs */
+}
+
+/* Modal Background */
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-height: 100vh;
+  background: rgba(0, 0, 0, 0.75); /* Slightly darker overlay */
+  width: 100%;
+  z-index: -1;
+  transition: all 0.1s ease-in-out;
+}
+
+/* Modal Content Box */
+.modal-content {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Increased gap for better spacing */
+  background-color: var(--bg-dark);
+  color: var(--text-color-primary);
+  font-family: "Inter", sans-serif; /* Modern font choice */
+  padding: 30px; /* Increased padding */
+  border-radius: 15px; /* Softer rounded corners */
+  min-width: 450px;
+  max-width: 90%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); /* Stronger shadow */
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  z-index: 100;
+  backdrop-filter: blur(15px); /* Stronger blur for modern look */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
+}
+
+/* Heading */
+.heddio {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-color-primary);
+}
+
+.heddp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+/* Input Field Wrapper */
+.midO {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+/* Input Labels */
+.midOT {
+  font-size: 14px;
+  color: var(--text-color-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Input Styles */
+.midOI {
+  padding: 12px 18px; /* Larger padding for better touch targets */
+  font-size: 16px;
+  border-radius: 10px;
+  color: var(--input-text-color);
+  outline: none;
+  background: var(--bg-white);
+  border: 2px solid transparent;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.midOI:focus {
+  border-color: var(--theme);
+  box-shadow: 0 0 0 2px rgba(255, 151, 65, 0.3);
+}
+
+/* Fix autofill background and text color */
+.midOI:-webkit-autofill,
+.midOI:-webkit-autofill:focus,
+.midOI:-webkit-autofill:hover {
+  box-shadow: 0 0 0 1000px var(--bg-white) inset !important;
+  -webkit-box-shadow: 0 0 0 1000px var(--bg-white) inset !important;
+  -webkit-text-fill-color: var(--input-text-color) !important;
+}
+
+/* Relative wrapper for eye toggle */
+.relati {
+  display: flex;
+  align-items: center;
+  padding-right: 0;
+  border-radius: 10px;
+  background: var(--bg-white);
+  width: 100%;
+  border: 2px solid transparent; /* Mimic the input border */
+}
+
+/* Password input style inside wrapper */
+.midN {
+  flex-grow: 1;
+  background: transparent; /* Makes midN transparent so relati background shows */
+  color: var(--input-text-color);
+  border: none;
+  padding: 12px 18px;
+  font-size: 16px;
+  border-radius: 10px;
+  outline: none;
+}
+
+.relati:focus-within {
+  border-color: var(--theme);
+  box-shadow: 0 0 0 2px rgba(255, 151, 65, 0.3);
+}
+
+/* Eye icon */
+.icon-position {
+  color: #6b7280;
+  font-size: 1.25rem;
+  padding: 0 15px 0 5px; /* Adjusted padding to better align */
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  display: flex; /* Ensures icon is centered */
+  align-items: center;
+}
+
+/* Checkbox and forgot password */
+.midI {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.kinto {
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  font-weight: 400;
+  line-height: 24px;
+  gap: 8px; /* Increased gap */
+  color: var(--text-color-secondary);
+  user-select: none; /* Prevent text selection on checkbox/label */
+}
+
+.checki {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--text-color-secondary);
+  border-radius: 6px;
+  cursor: pointer;
+  display: grid;
+  place-content: center;
+  transition: all 0.2s ease-in-out;
+}
+
+.checki::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--theme);
+  border-radius: 3px;
+}
+
+.checki:checked {
+  border-color: var(--theme);
+}
+
+.checki:checked::before {
+  transform: scale(1);
+}
+
+/* Forgot Password link */
+.forget-pass {
+  color: var(--theme);
+  cursor: pointer;
+  font-weight: 600;
+  transition: color 0.2s ease-in-out;
+}
+
+.forget-pass:hover {
+  color: var(--theme-hover);
+  text-decoration: underline;
+}
+
+/* Submit button */
+.btiom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--theme);
+  color: var(--input-text-color); /* Use dark text on the light theme color */
+  font-size: 18px; /* Larger font */
+  font-weight: 700;
+  padding: 12px 20px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  user-select: none;
+  border: none;
+  box-shadow: 0 4px 15px rgba(255, 151, 65, 0.4);
+}
+
+.btiom:hover {
+  background: var(--theme-hover);
+  box-shadow: 0 6px 20px rgba(255, 151, 65, 0.5);
+}
+
+.btiom:active {
+  transform: scale(0.98);
+}
+
+.btiom[disabled],
+.btiom.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Register/Login toggle line */
+.line-up {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 400;
+  gap: 5px;
+  font-family: "Inter", sans-serif;
+  color: var(--text-color-secondary);
+}
+
+/* Adjusting the inner kinto for the toggle */
+.line-up .kinto {
+  font-size: 16px;
+  color: var(--text-color-secondary);
+  gap: 8px;
+}
+
+.close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  color: var(--text-color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  transition: all 0.25s ease;
+  z-index: 9999;
+}
+
+.close-button:hover {
+  background: var(--theme);
+  color: var(--input-text-color);
+  transform: scale(1.05) rotate(90deg);
+}
+
+/* Profile Avatar Style */
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 10px auto 20px;
+    border: 3px solid var(--theme);
+    box-shadow: 0 0 10px rgba(255, 151, 65, 0.6);
+}
+
+/* Styles for the button/link when logged in (overrides inline styles) */
+.modal-content a[style],
+.modal-content button[style] {
+    background-color: var(--theme) !important;
+    color: var(--input-text-color) !important;
+    padding: 12px 25px !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease-in-out !important;
+    box-shadow: 0 4px 15px rgba(255, 151, 65, 0.4) !important;
+    margin-top: 10px;
+}
+
+.modal-content a[style]:hover,
+.modal-content button[style]:hover {
+    background-color: var(--theme-hover) !important;
+    box-shadow: 0 6px 20px rgba(255, 151, 65, 0.5) !important;
+}
+
+.modal-content button[style][disabled] {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 500px) {
+  .modal-content {
+    min-width: 90%;
+    padding: 20px;
+    border-radius: 10px;
+    gap: 10px;
+  }
+
+  .heddio {
+    font-size: 24px;
+  }
+
+  .kinto {
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .midI {
+    margin-bottom: 20px;
+  }
+  
+  .btiom {
+    font-size: 16px;
+    padding: 10px 15px;
+  }
+
+  .checki {
+    width: 18px;
+    height: 18px;
+  }
+
+  .midOI {
+    padding: 10px 15px;
+    font-size: 14px;
+  }
+
+  .midOT {
+    font-size: 13px;
+  }
+
+  .close-button {
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+  }
+}

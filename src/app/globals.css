@@ -19,8 +19,26 @@
   }
 }
 
+
+/* :root {
+  --grey-dark: #343a40;
+  --odd-grey: #3e454d;
+  --dark: #242428;
+  --height-small: 400px;
+  --height-medium: 500px;
+  --height-large: 610px;
+  --light: #ffffff;
+  --theme:  #fdbd73;
+  --random-colors: #ff5733, #33ff57, #5733ff, #ff33a8, #33a8ff, #a833ff, #ff33ff,
+    #33ffc2, #a8ff33, #ffc233;
+} */
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* .hero-bott {
+  background: var(--dark);
+} */

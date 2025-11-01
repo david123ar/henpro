@@ -1,0 +1,125 @@
+.overlay {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to top,
+    rgba(32, 31, 49, 1) 0%,
+    rgba(32, 31, 49, 0) 20%,
+    rgba(32, 31, 49, 0) 100%
+  );
+
+  z-index: 50;
+}
+.dot {
+  width: 5px;
+  height: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  display: inline-block;
+}
+.custom-badge {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px; /* space-x-1 = 0.25rem = 4px */
+  background-color: #B0E3AF;
+  border-radius: 2px;
+  padding: 2px 4px; /* py-[2px] = 2px top/bottom, px-[4px] = 4px left/right */
+  color: black;
+}
+.custom-badge-blue {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px; /* space-x-1 = 0.25rem = 4px */
+  background-color: #B9E7FF;
+  border-radius: 2px;
+  padding: 2px 8px; /* py-[2px] = 2px top/bottom, px-[8px] = 8px left/right */
+  color: black;
+}
+.custom-floating-box {
+  position: absolute;
+  left: 0.5rem; /* left-2 = 8px */
+  bottom: 1rem; /* bottom-4 = 16px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  gap: 4px; /* space-x-1 = 4px */
+  z-index: 70;
+}
+
+.card-statK {
+  display: flex;
+  flex-direction: column;
+}
+
+.timoInfo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between !important;
+}
+
+.epnt {
+  display: flex;
+  font-size: 13px;
+  font-weight: 500;
+  color: #b9b6b2;
+  gap: 3px;
+}
+
+.durnt {
+  display: flex;
+  gap: 2px;
+}
+
+.durntS {
+  color: var(--theme);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.durntM,
+.durntL {
+  color: #b9b6b2;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.scaling {
+  height: 3px;
+  width: 100%;
+  background: #696967;
+  margin-top: 10px;
+}
+
+.inlino {
+  background: var(--theme);
+  height: 3px;
+  width: 0; /* this gets dynamically set by inline style */
+}
+
+@media screen and (max-width: 400px) {
+  .durnt {
+    padding-right: 10px;
+  }
+  .timoInfo {
+    width: 80%;
+  }
+}
+
+
+@media (max-width: 270px) {
+  .custom-floating-box {
+    flex-direction: column;
+    row-gap: 3px; /* gap-y-[3px] = 3px vertical spacing */
+  }
+}

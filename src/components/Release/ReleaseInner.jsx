@@ -1,0 +1,56 @@
+import React from "react";
+import Card from "../Cards/Cards";
+import Sidebar from "../Sidebar/Sidebar";
+import "../Watch/Watch.css";
+import Footer from "../footer/Footer";
+import Navbar from "../Navbar/Navbar";
+
+const ReleaseInner = (props) => {
+  return (
+    <>
+      <Navbar now={false} />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "10px 0",
+          backgroundColor: "#201f31",
+        }}
+      >
+        <iframe
+          src="/ad"
+          title="Sponsored Ad"
+          scrolling="no"
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          style={{
+            width: "100%",
+            maxWidth: "728px",
+            height: "90px",
+            border: "none",
+            borderRadius: "10px",
+            overflow: "hidden",
+            backgroundColor: "#201f31",
+          }}
+        />
+      </div>
+      <div className="compli">
+        <div className="watc">
+          <Card
+            data={props.data}
+            link={`release?year=${props.year}`}
+            heading={props.year + " Hentai"}
+          />
+        </div>
+
+        <div className="sidc">
+          <Sidebar sidebar={props.data.data.sidebar} />
+        </div>
+      </div>
+      <Footer />
+    </>
+  );
+};
+
+export default ReleaseInner;

@@ -1,0 +1,132 @@
+/* Sidebar overlay */
+.navigation-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(36, 36, 40, 0.85);
+  backdrop-filter: blur(12px);
+  z-index: -1;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Sidebar panel */
+.navigation-list {
+  position: fixed;
+  top: 0;
+  left: -250px;
+  width: 250px;
+  height: 100vh;
+  background: #1e1e1e;
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  padding-bottom: 20px;
+  overflow-y: auto;
+  transition: all 0.3s ease-in-out;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Hide scrollbar */
+.navigation-list::-webkit-scrollbar {
+  width: 6px;
+}
+.navigation-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 151, 65, 0.5);
+  border-radius: 3px;
+}
+.navigation-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Close button */
+.wrap-clos {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+.close-menu {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 25px;
+  background: #242428;
+  color: #fff;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+.close-menu:hover {
+  background: #ff9741;
+  color: #1e1e1e;
+}
+
+/* Main links */
+.navigation-link-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 0 0;
+}
+.navigation-link-list ul li {
+  width: 100%;
+}
+.navigation-link-list ul li a {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  text-decoration: none;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+.navigation-link-list ul li a:hover {
+  background: #242428;
+  color: #ff9741;
+}
+
+/* Icon size */
+.icono {
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+}
+
+/* Button groups (Genres/Years) */
+.button-group {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  padding: 0 10px;
+}
+.button-group label {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: #ff9741;
+  cursor: default;
+  text-transform: uppercase;
+}
+.button-group a {
+  background: #242428;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.button-group a:hover {
+  background: #ff9741;
+  color: #1e1e1e;
+}
+
+/* Responsive text & spacing */
+.f-poppins {
+  font-family: "Poppins", sans-serif;
+}

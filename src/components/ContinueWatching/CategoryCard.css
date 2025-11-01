@@ -1,0 +1,173 @@
+/* --- CategoryCard Component Styles --- */
+
+/* Theme Color Variable - Set for glow and progress bar */
+:root {
+  --theme: #ff9741;
+}
+
+/* Hover Overlay */
+.overlay {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Soft gradient for blending the poster bottom */
+  background: linear-gradient(
+    to top,
+    rgba(32, 31, 49, 1) 0%,
+    rgba(32, 31, 49, 0) 20%
+  );
+  z-index: 50;
+  pointer-events: none; /* Allows clicks to pass through to the link */
+}
+
+/* Separator Dot */
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  display: inline-block;
+}
+
+/* Language Badges (Sub/Dub) - Unchanged */
+.custom-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #b0e3af; /* Greenish/Sub color */
+  border-radius: 2px;
+  padding: 2px 4px;
+  color: black;
+}
+.custom-badge-blue {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #b9e7ff; /* Blue/Dub color */
+  border-radius: 2px;
+  padding: 2px 8px;
+  color: black;
+}
+
+/* Floating Badges Box (18+, Sub, Dub, Eps) */
+.custom-floating-box {
+  position: absolute;
+  left: 8px;
+  bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 70;
+}
+
+/* Progress Bar and Stats for "Continue Watching" */
+.card-statK {
+  display: flex;
+  flex-direction: column;
+  margin-top: 4px;
+}
+
+.timoInfo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 8px;
+}
+
+.epnt {
+  display: flex;
+  font-size: 12px;
+  font-weight: 500;
+  color: #b9b6b2;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.durnt {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.durntS {
+  color: var(--theme);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.durntM,
+.durntL {
+  color: #b9b6b2;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.scaling {
+  height: 3px;
+  width: 100%;
+  background: #696967;
+  margin-top: 4px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.remove-button:hover {
+  cursor: pointer;
+}
+
+.inlino {
+  background: var(--theme);
+  height: 100%;
+  width: 0;
+  transition: width 0.3s ease-in-out;
+}
+
+/* Hover Enhancement: Image scaling on hover (Restored as it's a common hover effect) */
+.image-wrapper img {
+  transition: transform 0.5s ease-in-out;
+}
+.card-link:hover .image-wrapper img {
+  transform: scale(1.03);
+}
+
+/* Hover Enhancement: Title color change on hover */
+.item-title {
+  font-weight: 600;
+}
+
+.item-title:hover {
+  color: var(--theme); /* Changes title color to the theme color on hover */
+  transition: color 0.2s ease-out;
+}
+
+/* Play icon glow effect */
+/* The glow is applied directly in the JSX using filter: drop-shadow(0 0 10px var(--theme)), 
+   but adding a dedicated utility class here just in case Tailwind isn't available for `drop-shadow`. 
+   However, since you preferred minimal changes, I'll rely on the JSX inline style for maximum compatibility with your existing Tailwind setup. */
+
+/* --- Responsive Adjustments --- */
+@media screen and (max-width: 400px) {
+  .epnt,
+  .durntS,
+  .durntM,
+  .durntL {
+    font-size: 11px;
+  }
+  .timoInfo {
+    gap: 5px;
+  }
+}
+
+@media (max-width: 270px) {
+  .custom-floating-box {
+    flex-direction: column;
+    row-gap: 3px;
+    left: 4px; /* Move badges slightly inwards */
+  }
+}

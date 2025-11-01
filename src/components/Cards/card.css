@@ -1,0 +1,257 @@
+.related-grid-section {
+  width: 100%;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+.heading-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.total-series {
+  color: #d4d4d4;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding-right: 10px;
+}
+
+.related-heading {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  border-left: 4px solid #ff9741;
+  padding-left: 10px;
+
+  background: linear-gradient(90deg, #ff9741, #a86cf9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 20px;
+}
+
+.related-card {
+  /* background: #141414; */
+  /* border-radius: 10px; */
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.related-card:hover {
+  /* transform: translateY(-6px); */
+  box-shadow: 0 0 20px rgba(255, 151, 65, 0.5);
+}
+
+.related-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  /* border-radius: 10px; */
+  overflow: hidden;
+}
+
+.related-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.related-card:hover .related-img {
+  transform: scale(1.08);
+}
+
+/* Center glowing play icon */
+.play-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  font-size: 2.5rem;
+  color: #ff9741;
+  opacity: 0;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 0 10px rgba(255, 151, 65, 0.7));
+  z-index: 3;
+}
+
+.related-card:hover .play-icon {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  animation: glowPulse 1.2s infinite alternate;
+}
+
+@keyframes glowPulse {
+  from {
+    filter: drop-shadow(0 0 8px rgba(255, 151, 65, 0.6));
+  }
+  to {
+    filter: drop-shadow(0 0 18px rgba(255, 151, 65, 1));
+  }
+}
+
+.related-info {
+  padding: 10px;
+  text-align: center;
+}
+
+.related-title {
+  color: #ff9741;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.related-sub {
+  color: #aaa;
+  font-size: 0.75rem;
+}
+
+/* Pagination */
+/* Pagination */
+.pagination {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.page-btn {
+  background: #333; /* keep the bg dark */
+  color: #fff; /* normal text/icon color */
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s;
+}
+
+.page-btn:disabled {
+  color: #777; /* dimmed text/icon when disabled */
+  cursor: not-allowed;
+}
+
+.page-btn:hover:not(:disabled) {
+  color: #ff9741; /* highlight text/icon on hover */
+}
+
+/* Page numbers */
+.page-num {
+  color: #fff;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: #333;
+  min-width: 40px;
+  text-align: center;
+}
+
+.page-num.current {
+  background: #ff9741; /* current page bg */
+  color: #000;
+  cursor: pointer;
+}
+
+.page-num:not(.current):hover {
+  color: #ff9741; /* hover text color */
+  cursor: pointer;
+}
+
+.page-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .pagination {
+    gap: 5px;
+  }
+  .page-btn,
+  .page-num {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    min-width: 35px;
+  }
+  .page-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* Labels */
+.label-tag {
+  position: absolute;
+  padding: 3px 7px;
+  border-radius: 8px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 3;
+}
+
+.label-tag.top {
+  top: 10px;
+  right: 10px;
+}
+
+.label-tag.bottom.year-tag {
+  bottom: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.label-cen {
+  background: linear-gradient(135deg, #ff3b3b, #ff6b6b);
+}
+
+.label-unc {
+  background: linear-gradient(135deg, #00c97f, #4ef2b0);
+}
+
+.label-default {
+  background: linear-gradient(135deg, #555, #888);
+}
+
+/* Responsive grid */
+@media (max-width: 1300px) {
+  .related-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (max-width: 1200px) {
+  .related-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .related-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .related-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

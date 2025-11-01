@@ -1,0 +1,256 @@
+/*
+|--------------------------------------------------------------------------
+| WatchList Component Styles (watchList.css)
+|--------------------------------------------------------------------------
+*/
+
+/* --- Global Layout & Header Styles --- */
+.entFa {
+  display: flex;
+  flex-direction: column;
+  width: calc(75% - 1rem);
+  flex-wrap: wrap;
+  align-items: start;
+  justify-content: start;
+}
+.allInnr {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  /* padding-bottom: 20px; */
+}
+.watC {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  font-size: 32px;
+  padding: 20px 0 15px 0;
+  gap: 12px;
+  font-weight: 700;
+  color: #e0e0e0; /* Light text for dark background */
+}
+.watC svg {
+  color: #ff9741; /* Theme color for the heart icon */
+}
+.watCFa {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+.butM {
+  display: flex;
+  margin-bottom: 20px;
+}
+.butInnM {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: start;
+}
+
+/* --- Status Filter Buttons --- */
+.namil,
+.oamil {
+  padding: 8px 18px;
+  font-size: 14px;
+  background: #2c2c2c; /* Darker background for a sleek look */
+  border-radius: 20px; /* Pill-shaped buttons */
+  font-weight: 600;
+  color: #e0e0e0;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  border: 2px solid transparent;
+}
+.namil {
+  padding: 8px 30px;
+}
+.namil:hover,
+.oamil:hover {
+  color: #ff9741; /* Theme color on hover */
+  background: #383838;
+  cursor: pointer;
+  border-color: #ff974130;
+}
+/* Selected state */
+.selectedNO {
+  background: #ff9741; /* Theme color background */
+  color: #1a1a1a; /* Dark text for high contrast */
+  font-weight: 700;
+  border-color: #ff9741; /* Solid theme color border */
+}
+.selectedNO:hover {
+  color: #1a1a1a;
+  background: #e6883b; /* Slightly darker shade of theme color on hover */
+}
+
+/* --- Card Grid & Content Area Styles --- */
+.darg {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  column-gap: 1.5rem;
+  row-gap: 3rem;
+  padding: 0;
+}
+.drd-col {
+  width: calc(75% - 1rem);
+}
+.ddidd {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* margin-top: 20px; */
+}
+
+/* Card Specific Enhancements */
+.card-container {
+    /* Optional: Add a subtle box-shadow for depth */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    /* border-radius: 8px; */
+    overflow: hidden;
+}
+
+.card-image-wrapper {
+    position: relative;
+    /* border-radius: 8px; */
+    overflow: hidden;
+}
+
+.delete-button:hover {
+  cursor: pointer;
+}
+
+/* Overlay for Play Button */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0); /* Start transparent */
+  transition: background 0.3s ease-in-out;
+  z-index: 5;
+}
+
+.card-image-wrapper:hover .overlay {
+  background: rgba(0, 0, 0, 0.4); /* Darken on hover */
+}
+
+.card-title-link:hover {
+    color: #ff9741; /* Title hover matches accent */
+}
+
+/* --- Status Badges (Color-Coded) --- */
+.watchlist-status-badge {
+    background: rgba(0, 0, 0, 0.7); /* Base transparent dark background */
+    border: 1px solid;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
+}
+.watchlist-status-watching {
+    color: #4CAF50; /* Green */
+    border-color: #4CAF50;
+}
+.watchlist-status-onhold {
+    color: #FFC107; /* Yellow/Amber */
+    border-color: #FFC107;
+}
+.watchlist-status-plantowatch {
+    color: #00BCD4; /* Cyan/Light Blue */
+    border-color: #00BCD4;
+}
+.watchlist-status-dropped {
+    color: #F44336; /* Red */
+    border-color: #F44336;
+}
+.watchlist-status-completed {
+    color: #ff9741; /* Accent Orange */
+    border-color: #ff9741;
+}
+.last-watched-badge {
+    /* Optional: Make the episode badge stand out a bit more */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+/* --- Empty List State --- */
+.listEmp {
+  font-size: 32px;
+  padding: 10px 20px;
+  font-weight: 800;
+  color: #e0e0e0;
+}
+.adviso {
+  color: #ff9741; /* Theme color for advisories */
+  padding: 10px;
+  font-size: 18px;
+  font-weight: 500;
+}
+.adviso-1 {
+  display: flex;
+  color: #6a6a6a;
+  font-family: monospace;
+  font-size: 20px;
+}
+.EmLi {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 0;
+}
+
+/* --- Pagination Styles (Integrated with Tailwind classes in JS for better control) --- */
+/* Your existing pagination block is slightly redundant since Tailwind classes are used, but keeping it for completeness: */
+.paginA {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 60px;
+  margin-bottom: 30px;
+}
+.pagin-tile { /* Corresponds to Tailwind classes for buttons */ }
+.pagin-colo { /* Corresponds to Tailwind classes for active page */ }
+/* Override for InternalPageSlider's margin */
+.mt-0 {
+  margin-top: 0 !important;
+}
+
+/* --- Media Queries (Unchanged) --- */
+@media screen and (max-width: 1150px) {
+  .drd-col {
+    width: 100%;
+  }
+  .entFa {
+    width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+    gap: 0;
+  }
+}
+
+@media screen and (max-width: 476px) {
+  .watC {
+    font-size: 24px;
+    padding: 15px 0;
+  }
+  .namil,
+  .oamil {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  .butInnM {
+    gap: 6px;
+  }
+  .listEmp {
+    font-size: 24px;
+    text-align: center;
+  }
+  .adviso {
+    font-size: 16px;
+    text-align: center;
+  }
+}

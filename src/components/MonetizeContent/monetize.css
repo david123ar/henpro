@@ -1,0 +1,491 @@
+/* monetize.css - Final Professional Dark Theme */
+
+/* Variables */
+:root {
+  --color-primary: #ff9741; /* Primary Accent (Coral/Orange) */
+  --color-primary-dark: #cc7834;
+  --color-dark-bg: #030303; /* Deep, near-black background */
+  --color-card-bg: #101010; /* Darker card base */
+  --color-card-bg-light: #1c1c1c; /* Lighter section background */
+  --color-text-white: #e0e0e0; /* Off-white text for softer contrast */
+  --color-text-gray: #757575; /* Subdued secondary text */
+  --color-border: #2c2c2c; /* Subtle, clean border */
+  --color-input-bg: #181818;
+  --shadow-base: 0 4px 12px rgba(0, 0, 0, 0.5); /* Retained subtle base shadow */
+}
+
+/* ---------------------------------------------------- */
+/* Global/Base Styles */
+/* ---------------------------------------------------- */
+body {
+  background-color: var(--color-dark-bg);
+  color: var(--color-text-white);
+  font-family: "Inter", system-ui, sans-serif;
+  margin: 0;
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease-out;
+}
+
+/* Global Title Icon (reduced effect) */
+.title-icon {
+  color: var(--color-primary);
+  filter: none;
+}
+
+/* ---------------------------------------------------- */
+/* Loading State */
+/* ---------------------------------------------------- */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+}
+
+.loading-icon {
+  font-size: 60px;
+  color: var(--color-primary);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  filter: none;
+}
+
+.loading-text {
+  color: var(--color-text-gray);
+  margin-top: 1rem;
+  font-size: 1.125rem;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* ---------------------------------------------------- */
+/* Unauthenticated State (Login/Signup Page) */
+/* ---------------------------------------------------- */
+.unauthenticated-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 4rem 1.5rem;
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+.unauthenticated-title {
+  filter: none;
+  font-size: 2.5rem;
+  line-height: 1.1;
+  font-weight: 800;
+  color: var(--color-text-white);
+  margin-bottom: 1rem;
+  letter-spacing: -0.05em;
+}
+
+@media (min-width: 768px) {
+  .unauthenticated-title {
+    font-size: 3.5rem;
+  }
+}
+
+.unauthenticated-subtitle {
+  color: var(--color-text-gray);
+  font-size: 1.1rem;
+  margin-bottom: 2.5rem;
+}
+
+/* Stats Grid */
+.unauthenticated-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .unauthenticated-stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.stat-card {
+  background-color: var(--color-card-bg);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-base);
+  border: 1px solid var(--color-border);
+  transition: all 0.3s;
+}
+
+.stat-card:hover {
+  border-color: var(--color-primary-dark);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7);
+}
+
+.stat-icon {
+  filter: none;
+  color: var(--color-primary);
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.stat-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-text-white);
+}
+
+.stat-description {
+  color: var(--color-text-gray);
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+/* CTA Button */
+.cta-button {
+  background-color: var(--color-primary);
+  color: var(--color-dark-bg);
+  padding: 1rem 2.5rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.cta-button:hover {
+  background-color: var(--color-primary-dark);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
+  transform: translateY(-2px);
+}
+
+.unauthenticated-login-info {
+  color: var(--color-text-gray);
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.login-link {
+  color: var(--color-primary);
+  cursor: pointer;
+  border-bottom: 1px dashed var(--color-primary);
+}
+
+.login-link:hover {
+  border-bottom-style: solid;
+}
+
+/* ---------------------------------------------------- */
+/* Authenticated State (Dashboard) */
+/* ---------------------------------------------------- */
+.monetize-authenticated-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--color-dark-bg);
+  padding: 0 1rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.monetize-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.monetize-dashboard-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  margin-bottom: 0.5rem;
+  color: var(--color-text-white);
+}
+
+@media (min-width: 640px) {
+  .monetize-dashboard-title {
+    font-size: 3rem;
+  }
+}
+
+.monetize-welcome-message {
+  color: var(--color-text-gray);
+  font-size: 1rem;
+}
+
+.welcome-username {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* Main Content Wrapper (Container for steps/info) */
+.monetize-main-content {
+  padding: 1rem;
+  background: linear-gradient(135deg, #181818, #0a0a0a);
+  border-radius: 16px;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  transition: all 0.4s;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.monetize-main-content:hover {
+  border-color: var(--color-primary-dark);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.setup-section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding: 1.5rem 0;
+  margin: 0 1.5rem;
+  border-bottom: 2px solid var(--color-border);
+  color: var(--color-primary);
+  filter: none;
+}
+
+/* ---------------------------------------------------- */
+/* Monetization Steps Component */
+/* ---------------------------------------------------- */
+.monetize-steps-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 0;
+  /* margin: 0 auto; */
+}
+
+@media (min-width: 768px) {
+  .monetize-steps-wrapper {
+    padding: 4rem 2rem;
+  }
+}
+
+.monetize-steps-title {
+  filter: none;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text-white);
+  margin-bottom: 0.75rem;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+@media (min-width: 768px) {
+  .monetize-steps-title {
+    font-size: 2.5rem;
+  }
+}
+
+.monetize-steps-subtitle {
+  color: var(--color-text-gray);
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  max-width: 40rem;
+  text-align: center;
+}
+
+/* Steps Grid */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 2rem;
+  width: 100%;
+  max-width: 60rem;
+}
+
+@media (min-width: 768px) {
+  .steps-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+.step-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.75rem;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-card-bg-light);
+  box-shadow: var(--shadow-base);
+  transition: all 0.3s;
+  min-height: 380px;
+}
+
+.step-card:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.8);
+}
+
+.step-icon {
+  filter: none;
+  color: var(--color-primary);
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.step-input {
+  margin-top: 0.5rem;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  background-color: var(--color-input-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-white);
+  transition: all 200ms;
+  width: 100%;
+  font-size: 1rem;
+}
+
+.step-input:focus {
+  outline: none;
+  border-color: var(--color-primary-dark);
+  box-shadow: 0 0 0 2px rgba(255, 151, 65, 0.5);
+}
+
+.step-link {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-align: center;
+  display: block;
+  transition: color 200ms;
+  border-bottom: 1px solid transparent;
+}
+
+.step-link:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+}
+
+/* Save Button */
+.save-button {
+  margin-top: 1.5rem;
+  width: 100%;
+  padding: 1rem 1rem;
+  border-radius: 10px;
+  background-color: var(--color-primary);
+  color: var(--color-dark-bg);
+  font-weight: 700;
+  font-size: 1.05rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.save-button:hover {
+  background-color: var(--color-primary-dark);
+  transform: scale(1.02);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.7);
+}
+
+.monetize-steps-info {
+  color: var(--color-text-gray);
+  font-size: 0.9rem;
+  margin-top: 1.5rem;
+  max-width: 36rem;
+  text-align: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+/* ---------------------------------------------------- */
+/* Custom Toast Notification */
+/* ---------------------------------------------------- */
+
+.custom-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  z-index: 1000;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.toast-icon-message {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.toast-icon {
+  font-size: 1.5rem;
+}
+
+/* Success Style */
+.custom-toast-success {
+  background-color: #28a745; /* Green */
+  border: 1px solid #1e7e34;
+}
+
+/* Error Style */
+.custom-toast-error {
+  background-color: #dc3545; /* Red */
+  border: 1px solid #c82333;
+}
+
+/* Info/Default Style */
+.custom-toast-info {
+  background-color: #007bff; /* Blue */
+  border: 1px solid #0056b3;
+}
+
+.toast-close-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.25rem;
+  padding: 0;
+  opacity: 0.7;
+}
+
+.toast-close-btn:hover {
+  opacity: 1;
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+  .custom-toast {
+    width: 90%;
+    left: 5%;
+    right: 5%;
+    bottom: 15px;
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+  }
+}

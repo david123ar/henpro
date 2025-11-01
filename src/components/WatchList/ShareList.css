@@ -1,0 +1,211 @@
+.alltio {
+  margin-top: 65px;
+}
+
+.award-bg {
+  width: 100%; /* full width */
+  padding-bottom: 40%; /* aspect ratio 2.5:1 */
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  overflow: hidden;
+  z-index: 0; /* behind content */
+}
+
+
+.award-bg .award-bg-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  
+  /* Gradient overlay + image */
+  background-image:
+    linear-gradient(to top, #201f31, transparent),
+    url('https://hianime.pe/images/community/cover.jpg');
+  
+  background-size: cover;
+  background-position: center;
+  
+  filter: blur(10px);
+  opacity: 0.3;
+}
+
+
+.entFa {
+  display: flex;
+  flex-direction: column;
+  width: calc(75% - 1rem);
+  flex-wrap: wrap;
+  align-items: start;
+  justify-content: start;
+}
+
+.theme-hover-link {
+  color: #fff;
+  margin-top: 20px;
+}
+
+.theme-hover-link:hover {
+  color: var(--theme);
+  cursor: pointer;
+}
+
+.allInnr {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+.watCh {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  font-size: 30px;
+  padding: 20px 0;
+  gap: 10px;
+  font-weight: 600;
+  color: var(--theme);
+}
+.watCFa {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+.butM {
+  display: flex;
+}
+.butInnMn {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: start;
+}
+.namili {
+  padding: 5px 30px;
+  font-size: 15px;
+  background: rgba(126, 123, 123, 0.3); /* white background with 60% opacity */
+  color: #fff;
+  border-radius: 5px;
+  font-weight: 500;
+}
+.namili:hover {
+  color: var(--theme);
+  cursor: pointer;
+}
+.oamili {
+  padding: 5px 10px;
+  font-size: 15px;
+  background: rgba(126, 123, 123, 0.3); /* white background with 60% opacity */
+  color: #fff; /* text fully opaque white */
+  border-radius: 5px;
+  font-weight: 500;
+}
+
+.oamili:hover {
+  color: var(--theme);
+  cursor: pointer;
+}
+.selectedNO {
+  background: var(--theme);
+  color: #000;
+}
+.selectedNO:hover {
+  color: #000;
+}
+.darg {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  column-gap: 1rem;
+  row-gap: 3rem;
+}
+.drd-col {
+  width: calc(75% - 1rem);
+}
+.ddidd {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+.listEmp {
+  font-size: 30px;
+  padding: 10px 20px;
+  font-weight: 800;
+}
+.adviso {
+  color: var(--theme);
+  padding: 10px;
+}
+.adviso-1 {
+  display: flex;
+}
+.EmLi {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.paginA {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 50px;
+  margin-bottom: 20px;
+}
+.pagin-tile {
+  height: 50px;
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--grey-dark);
+  color: rgb(160, 163, 159);
+  border-radius: 50%;
+  font-weight: 600;
+}
+.pagin-tile:hover {
+  color: var(--theme);
+  cursor: pointer;
+}
+.pagin-colo {
+  background: var(--theme);
+  color: black;
+}
+.pagin-colo:hover {
+  background: var(--theme);
+  color: black;
+}
+@media screen and (max-width: 1150px) {
+  .drd-col {
+    width: 100%;
+  }
+  .entFa {
+    width: 100%;
+    padding-left: 10px;
+    gap: 0;
+  }
+}
+
+@media screen and (max-width: 476px) {
+  .watCh {
+    font-size: 20px;
+    padding: 20px 0;
+  }
+  .namili {
+    padding: 5px 10px;
+    font-size: 13px;
+  }
+  .oamili {
+    padding: 5px 10px;
+    font-size: 13px;
+  }
+}

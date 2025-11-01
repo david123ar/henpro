@@ -1,0 +1,475 @@
+/* Variables (Updated to use #ff9741 as the primary theme color) */
+:root {
+  --primary-color: #ff9741; /* VIBRANT ORANGE THEME COLOR */
+  --accent-color: #00f2fe; /* Secondary accent (optional, keeping old primary for contrast) */
+  --dark-bg: #1e1e1e; /* Main dark background */
+  --card-bg: #2c2c2c; /* Card/Panel background */
+  --input-bg: #404040; /* Input background */
+  --light-text: #e0e0e0; /* Primary text color */
+  --faded-text: #999999; /* Label/Hint text color */
+  --error-color: #e74c3c;
+  --success-color: #2ecc71;
+  --info-color: #3498db;
+}
+
+/* 5. CUSTOM TOAST STYLES */
+.custom-toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  padding: 15px 20px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 3000;
+  animation: fadeInSlideUp 0.3s ease-out;
+}
+
+.toast-icon-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.custom-toast-success {
+  background-color: var(--success-color);
+}
+.custom-toast-error {
+  background-color: var(--error-color);
+}
+.custom-toast-info {
+  background-color: var(--info-color);
+}
+
+.toast-close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.1rem;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.toast-close-btn:hover {
+  opacity: 1;
+}
+
+@keyframes fadeInSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .custom-toast {
+    bottom: 20px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 350px;
+    text-align: center;
+  }
+}
+
+/* 1. Main Container and Title (Existing styles below, modified for clarity) */
+.profile-edit-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 20px;
+  background: var(--dark-bg);
+  color: var(--light-text);
+  min-height: calc(100vh - 60px);
+}
+
+.profile-title {
+  display: flex;
+  align-items: center;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  margin-bottom: 30px;
+  gap: 12px;
+  font-weight: 700;
+  color: var(--light-text);
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 800px;
+}
+
+/* 2. Profile Card Layout (Desktop) */
+.profile-card {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  max-width: 800px;
+  background: var(--card-bg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  padding: 30px;
+  gap: 40px;
+}
+
+/* 2a. Avatar Section */
+.profile-avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-right: 20px;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.avatar-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.avatar-wrapper:hover {
+  transform: scale(1.05);
+}
+
+.user-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--primary-color);
+  box-shadow: 0 0 10px rgba(255, 151, 65, 0.5);
+}
+
+.edit-pen-icon {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background-color: var(--primary-color);
+  color: var(--dark-bg);
+  border-radius: 50%;
+  padding: 8px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--card-bg);
+  transition: background-color 0.2s ease;
+}
+
+.join-date {
+  font-size: 0.9rem;
+  color: var(--faded-text);
+}
+
+.join-date span {
+  font-weight: 600;
+  color: var(--light-text);
+}
+
+/* 2b. Form Section */
+.profile-form-section {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.password-fields-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 5px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field-label-custom {
+  font-size: 11px;
+  color: var(--primary-color);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.field-input-custom {
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: var(--light-text);
+  background: var(--input-bg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.field-input-custom:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px rgba(255, 151, 65, 0.5);
+}
+
+/* Change Password Button */
+.change-password-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: var(--faded-text);
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 5px 0;
+  margin-top: 10px;
+  align-self: flex-start;
+  transition: color 0.2s ease;
+}
+
+.change-password-toggle:hover {
+  color: var(--primary-color);
+}
+
+/* Save Button */
+.save-button-custom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--primary-color);
+  padding: 12px;
+  border-radius: 8px;
+  color: var(--dark-bg);
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 25px;
+  border: none;
+  transition: background-color 0.2s, opacity 0.2s;
+  font-size: 1.1rem;
+}
+
+.save-button-custom:hover:not(:disabled) {
+  background: #e6883b;
+}
+
+.save-button-custom:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.save-error {
+  color: var(--error-color);
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* 3. Avatar Modal Styles */
+.avatar-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  padding: 1rem;
+}
+
+.modal-content-custom {
+  background-color: var(--card-bg);
+  padding: 2rem;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 700px;
+  color: var(--light-text);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+}
+
+.modal-title {
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  text-align: center;
+  color: var(--primary-color);
+}
+
+.avatar-selection-scroll {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-right: 15px;
+  margin-bottom: 1rem;
+}
+
+.avatar-category {
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.category-title {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: var(--light-text);
+  font-weight: 600;
+  padding-left: 5px;
+}
+
+.avatar-images-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.modal-avatar-image {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+.modal-avatar-image:hover,
+.modal-avatar-image.selected {
+  border-color: var(--primary-color);
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(255, 151, 65, 0.7);
+}
+
+/* Modal Footer Buttons */
+.modal-footer-custom {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.modal-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease, transform 0.1s;
+}
+
+.modal-btn.cancel {
+  background-color: var(--input-bg);
+  color: var(--light-text);
+}
+
+.modal-btn.cancel:hover {
+  background-color: #555;
+}
+
+.modal-btn.apply {
+  background-color: var(--primary-color);
+  color: var(--dark-bg);
+}
+
+.modal-btn.apply:hover {
+  background-color: #e6883b;
+}
+
+/* Close Button */
+.close-modal-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: 50%;
+  font-size: 20px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  color: var(--light-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.close-modal-btn:hover {
+  background: var(--error-color);
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+/* 4. Responsive Adjustments (Mobile) */
+@media (max-width: 768px) {
+  .profile-card {
+    flex-direction: column;
+    padding: 20px;
+    gap: 20px;
+  }
+
+  .profile-avatar-section {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 20px;
+    padding-right: 0;
+    width: 100%;
+  }
+
+  .form-grid,
+  .password-fields-container {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .change-password-toggle {
+    align-self: stretch;
+  }
+
+  .modal-content-custom {
+    max-height: 80vh;
+    padding: 1.5rem;
+  }
+
+  .modal-avatar-image {
+    width: 60px;
+    height: 60px;
+  }
+
+  .avatar-images-grid {
+    justify-content: center;
+  }
+
+  .modal-footer-custom {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
