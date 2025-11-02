@@ -28,6 +28,7 @@ const CardItem = React.memo(
     item,
     index,
     refer,
+    creator, // ⬅️ NEW: Accept creator prop
     keepIt,
     isLoggedIn,
     handleRemove,
@@ -40,6 +41,9 @@ const CardItem = React.memo(
     formatTime,
     cardStyle,
   }) => {
+    // Helper to generate the base creator query string
+    const getCreatorQuery = () => (creator ? `&creator=${creator}` : "");
+
     return (
       <div
         key={item.id + index}
@@ -64,7 +68,8 @@ const CardItem = React.memo(
         )}
 
         <Link
-          href={getLink(item, refer)}
+          // ⬅️ UPDATED: Use getLink which now includes the creator param
+          href={getLink(item, refer, creator)} 
           className="w-full relative group hover:cursor-pointer card-link"
           onClick={() =>
             typeof window !== "undefined" &&
@@ -87,7 +92,7 @@ const CardItem = React.memo(
           <div className="overflow-hidden image-wrapper">
             <img
               // ⭐️ ENHANCEMENT: Use item.poster_w780 for better quality if available, or item.poster
-              src={item.poster_w780 || item.poster} 
+              src={item.poster_w780 || item.poster}
               alt={item.title}
               className={`w-full h-full object-cover ${cardStyle} transform transition-all duration-500 ease-in-out`}
               loading="lazy"
@@ -121,9 +126,10 @@ const CardItem = React.memo(
 
         {/* Title link */}
         <Link
+          // ⬅️ UPDATED: Append creator param to the title link
           href={`/${item.parentContentId || item.id}?refer=${
             refer || "weebsSecret"
-          }`}
+          }${getCreatorQuery()}`}
           className="item-title font-medium mt-2 hover:cursor-pointer line-clamp-1"
           title={item.title} // ⭐️ ADDED: Title attribute for accessibility
         >
@@ -184,6 +190,7 @@ const CategoryCard = ({
   refer,
   keepIt,
   isLoggedIn,
+  creator, // ⬅️ NEW: Accept creator prop
 }) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition(); // ⭐️ NEW: useTransition
@@ -312,8 +319,8 @@ const CategoryCard = ({
     [isLoggedIn, startTransition]
   );
 
-  // --- Link Generation (Optimized) ---
-  const getLink = useCallback((item, refer) => {
+  // --- Link Generation (Optimized and Updated) ---
+  const getLink = useCallback((item, refer, creator) => { // ⬅️ Accept creator
     const episodeId = item.episodeId || item.contentKey;
     const parentId = item.parentContentId;
     const fallbackId = item.id;
@@ -326,11 +333,17 @@ const CategoryCard = ({
       basePath = `/watch/${fallbackId}`;
     }
 
-    // Default 'refer' param for clean code
-    const referParam = `refer=${refer || "weebsSecret"}`;
+    // Append 'refer' and 'creator'
+    let queryString = `refer=${refer || "weebsSecret"}`;
+    if (creator) {
+      queryString += `&creator=${creator}`;
+    }
+    
+    // Determine the separator based on whether basePath already has a query
     const separator = basePath.includes("?") ? "&" : "?";
-    return `${basePath}${separator}${referParam}`;
-  }, []);
+    
+    return `${basePath}${separator}${queryString}`;
+  }, []); // Depend on nothing as arguments provide all external values
 
   const formatTime = useCallback((seconds) => {
     const m = Math.floor(seconds / 60);
@@ -344,6 +357,9 @@ const CategoryCard = ({
 
   const finalItemsToRender = categoryPage && typeof window !== "undefined" && window.innerWidth > 758 && data.length > 4 ? data.slice(0, 4) : data;
 
+  // Helper to generate the creator query string for the View More link
+  const getCreatorQueryForViewMore = () => (creator ? `&creator=${creator}` : "");
+
   return (
     <div className={`w-full ${className}`}>
       {/* Header (Title and View More) */}
@@ -354,7 +370,8 @@ const CategoryCard = ({
           </h1>
           {showViewMore && (
             <Link
-              href={`/${path}?refer=${refer || "weebsSecret"}`}
+              // ⬅️ UPDATED: Append creator param to View all link
+              href={`/${path}?refer=${refer || "weebsSecret"}${getCreatorQueryForViewMore()}`}
               onClick={() =>
                 typeof window !== "undefined" &&
                 window.scrollTo({ top: 0, behavior: "smooth" })
@@ -378,6 +395,7 @@ const CategoryCard = ({
             item={item}
             index={index}
             refer={refer}
+            creator={creator} // ⬅️ NEW: Pass creator to CardItem
             keepIt={keepIt}
             isLoggedIn={isLoggedIn}
             handleRemove={handleRemove}

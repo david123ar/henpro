@@ -11,7 +11,7 @@ import {
 } from "react-icons/fa";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation"; // ⭐️ Imported useSearchParams
 import { FaSackDollar } from "react-icons/fa6";
 
 export default function Profilo(props) {
@@ -19,6 +19,19 @@ export default function Profilo(props) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { data: session } = useSession();
+
+  // ⭐️ Get the creator parameter from the URL
+  // const searchParams = useSearchParams();
+  const creator = props.creator;
+
+  // ⭐️ Helper function to append the creator parameter to a URL
+  const getUpdatedLink = (baseLink) => {
+    if (!creator || baseLink.startsWith("http")) return baseLink;
+
+    const separator = baseLink.includes("?") ? "&" : "?";
+    return `${baseLink}${separator}creator=${creator}`;
+  };
+  // --------------------------------------------------------
 
   const handleSignOut = async () => {
     setLoading(true);
@@ -70,55 +83,54 @@ export default function Profilo(props) {
         <div className="profip-menu-items">
           {/* Menu Items */}
           <Link
-            href={`/user/profile${
-              props.refer ? `?refer=${props.refer}` : `?refer=weebsSecret`
-            }`}
+            // ⭐️ Applied creator logic
+            href={getUpdatedLink("/user/profile")}
             className="profip-menu-item"
+            onClick={() => props.setProfiIsOpen(false)}
           >
             <FaUser className="menu-icon" />
             <span className="menu-text">Profile</span>
           </Link>
           <Link
-            href={`/user/continue-watching${
-              props.refer ? `?refer=${props.refer}` : `?refer=weebsSecret`
-            }`}
+            // ⭐️ Applied creator logic
+            href={getUpdatedLink("/user/continue-watching")}
             className="profip-menu-item"
+            onClick={() => props.setProfiIsOpen(false)}
           >
             <FaHistory className="menu-icon" />
             <span className="menu-text">Continue Watching</span>
           </Link>
           <Link
-            href={`/user/watch-list${
-              props.refer ? `?refer=${props.refer}` : `?refer=weebsSecret`
-            }`}
+            // ⭐️ Applied creator logic
+            href={getUpdatedLink("/user/watch-list")}
             className="profip-menu-item"
+            onClick={() => props.setProfiIsOpen(false)}
           >
             <FaHeart className="menu-icon" />
             <span className="menu-text">Watch List</span>
           </Link>
           <Link
-            href={`/user/notification${
-              props.refer ? `?refer=${props.refer}` : `?refer=weebsSecret`
-            }`}
+            // ⭐️ Applied creator logic
+            href={getUpdatedLink("/user/notification")}
             className="profip-menu-item"
+            onClick={() => props.setProfiIsOpen(false)}
           >
             <FaBell className="menu-icon" />
             <span className="menu-text">Notification</span>
           </Link>
           {/* <Link
-            href={`/user/settings${
-              props.refer ? `?refer=${props.refer}` : `?refer=weebsSecret`
-            }`}
+            href={getUpdatedLink("/user/settings")}
             className="profip-menu-item"
+            onClick={() => props.setProfiIsOpen(false)}
           >
             <FaCog className="menu-icon" />
             <span className="menu-text">Settings</span>
           </Link> */}
           <Link
-            href={`/monetize${
-              props.refer ? `?refer=${props.refer}` : `?refer=weebsSecret`
-            }`}
+            // ⭐️ Applied creator logic
+            href={getUpdatedLink("/monetize")}
             className="profip-menu-item monetize"
+            onClick={() => props.setProfiIsOpen(false)}
           >
             <FaSackDollar className="menu-icon" />
             <span className="menu-text">Monetize</span>

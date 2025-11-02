@@ -85,11 +85,10 @@ const StatsTable = ({ stats, sortKey, sortDirection, onSort }) => {
               <th
                 key={index}
                 scope="col"
-                className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-300 border-b border-gray-700 cursor-pointer hover:bg-[#252525] ${
-                  key === "revenue" || key === "cpm" || key === "ctr"
-                    ? "text-right"
-                    : ""
-                }`}
+                className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-300 border-b border-gray-700 cursor-pointer hover:bg-[#252525] ${key === "revenue" || key === "cpm" || key === "ctr"
+                  ? "text-right"
+                  : ""
+                  }`}
                 onClick={() => onSort(key)}
               >
                 {headers[index]}
@@ -107,13 +106,12 @@ const StatsTable = ({ stats, sortKey, sortDirection, onSort }) => {
               {dataKeys.map((key, colIndex) => (
                 <td
                   key={colIndex}
-                  className={`px-6 py-4 whitespace-nowrap text-sm ${
-                    key === "revenue"
-                      ? "font-bold text-lg text-green-400 text-right"
-                      : key === "cpm" || key === "ctr"
+                  className={`px-6 py-4 whitespace-nowrap text-sm ${key === "revenue"
+                    ? "font-bold text-lg text-green-400 text-right"
+                    : key === "cpm" || key === "ctr"
                       ? "text-yellow-400 text-right"
                       : "text-gray-300"
-                  }`}
+                    }`}
                 >
                   {key === "revenue" ? formatCurrency(row[key]) : row[key]}
                 </td>
@@ -166,8 +164,8 @@ function CreatorDashboardContent({ creatorApiKey }) {
       } else {
         setError(
           data.message ||
-            data.error ||
-            "Failed to fetch stats from Adsterra. Check your API key and permissions."
+          data.error ||
+          "Failed to fetch stats from Adsterra. Check your API key and permissions."
         );
         setStats([]);
       }
@@ -231,9 +229,8 @@ function CreatorDashboardContent({ creatorApiKey }) {
         </p>
         <div className="w-full bg-[#222] rounded-full h-3 mb-3 overflow-hidden">
           <div
-            className={`h-3 rounded-full transition-all duration-700 ${
-              progress >= 100 ? "bg-green-500" : "bg-[#ff9741]"
-            }`}
+            className={`h-3 rounded-full transition-all duration-700 ${progress >= 100 ? "bg-green-500" : "bg-[#ff9741]"
+              }`}
             style={{ width: `${progress}%` }}
           ></div>
         </div>
@@ -291,11 +288,10 @@ function CreatorDashboardContent({ creatorApiKey }) {
         <button
           onClick={fetchStats}
           disabled={loading}
-          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-            loading
-              ? "bg-[#2a2a2a] text-gray-400 cursor-not-allowed"
-              : "bg-[#ff9741] text-black hover:bg-[#ffa95c] hover:shadow-[0_0_20px_rgba(255,151,65,0.4)]"
-          }`}
+          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${loading
+            ? "bg-[#2a2a2a] text-gray-400 cursor-not-allowed"
+            : "bg-[#ff9741] text-black hover:bg-[#ffa95c] hover:shadow-[0_0_20px_rgba(255,151,65,0.4)]"
+            }`}
         >
           {loading ? "Loading..." : "Refresh Stats"}
         </button>
@@ -446,10 +442,9 @@ const CreatorSettings = ({
             onClick={handleSmartlinkSubmit}
             disabled={isLoadingSetup}
             className={`w-full py-2.5 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 shadow-md
-              ${
-                isLoadingSetup
-                  ? "bg-[#2a2a2a] text-gray-400 cursor-not-allowed"
-                  : "bg-[#ff9741] text-black hover:bg-[#ffa95c] hover:shadow-[0_0_20px_rgba(255,151,65,0.4)]"
+              ${isLoadingSetup
+                ? "bg-[#2a2a2a] text-gray-400 cursor-not-allowed"
+                : "bg-[#ff9741] text-black hover:bg-[#ffa95c] hover:shadow-[0_0_20px_rgba(255,151,65,0.4)]"
               }`}
           >
             {isLoadingSetup ? "Saving..." : "Update Settings"}
@@ -524,7 +519,7 @@ function MonetizationSteps({
               className="w-full bg-[#1a1a1a] text-gray-200 border border-gray-700 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition text-sm"
             />
             <a
-              href="https://beta.publishers.adsterratools.com/links"
+              href="https://beta.publishers.adsterra.com/links"
               target="_blank"
               rel="noopener noreferrer"
               className="text-cyan-400 font-medium mt-2 hover:text-cyan-300 transition"
@@ -560,7 +555,7 @@ function MonetizationSteps({
               className="w-full bg-[#1a1a1a] text-gray-200 border border-gray-700 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-pink-500 transition text-sm"
             />
             <a
-              href="https://beta.publishers.adsterratools.com/api-token"
+              href="https://beta.publishers.adsterra.com/api-token"
               target="_blank"
               rel="noopener noreferrer"
               className="text-yellow-400 font-medium mt-2 hover:text-yellow-300 transition"
@@ -591,7 +586,7 @@ function MonetizationSteps({
 // ----------------------------------------------------
 // THE MAIN MONETIZE COMPONENT
 // ----------------------------------------------------
-export function MonetizeInner() {
+export function MonetizeInner(props) {
   const { data: session, status } = useSession();
 
   const [adsterraSmartlink, setAdsterraSmartlink] = useState("");
@@ -709,14 +704,14 @@ export function MonetizeInner() {
   if (status === "loading" || (session && isLoadingSetup)) {
     return (
       <>
-        <Navbar now={false} />
+        <Navbar now={false} creator={props.creator} />
         <div className="flex flex-col items-center justify-center h-[60vh] text-center px-4 sm:px-6">
           <FaSackDollar className="text-5xl sm:text-6xl text-green-400 drop-shadow-[0_0_10px_rgba(0,255,100,0.5)] animate-pulse mb-3" />
           <p className="text-gray-300 text-lg sm:text-xl font-medium">
             Loading Creator Dashboard...
           </p>
         </div>
-        <Footer />
+        <Footer creator={props.creator} />
       </>
     );
   }
@@ -725,7 +720,7 @@ export function MonetizeInner() {
   if (!session) {
     return (
       <>
-        <Navbar now={false} />
+        <Navbar now={false} creator={props.creator} />
         <div className="text-white flex flex-col items-center text-center px-4 sm:px-6 md:px-10 py-8 sm:py-10 md:py-14">
           {/* Title */}
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 drop-shadow-[0_0_15px_rgba(0,200,255,0.4)]">
@@ -804,7 +799,7 @@ export function MonetizeInner() {
             to access your dashboard.
           </p>
         </div>
-        <Footer />
+        <Footer creator={props.creator} />
       </>
     );
   }
@@ -812,7 +807,7 @@ export function MonetizeInner() {
   // AUTHENTICATED STATE
   return (
     <>
-      <Navbar now={false} />
+      <Navbar now={false} creator={props.creator} />
       <div className="min-h-screen text-white bg-[#0a0a0a] px-4 sm:px-6 md:px-10 py-8 sm:py-10 md:py-14 relative overflow-hidden">
         {/* Optional gradient backdrop */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-[#101010] to-[#080808] pointer-events-none" />
@@ -849,21 +844,19 @@ export function MonetizeInner() {
               <div className="flex flex-wrap justify-center mb-6 sm:mb-8 border-b border-gray-700 bg-[#121212] rounded-t-xl overflow-hidden">
                 <button
                   onClick={() => setCurrentView("dashboard")}
-                  className={`px-5 sm:px-8 py-3 text-sm sm:text-lg font-semibold transition-all duration-300 ${
-                    currentView === "dashboard"
-                      ? "text-white border-b-2 border-orange-500 drop-shadow-[0_0_10px_rgba(255,150,0,0.5)]"
-                      : "text-gray-400 hover:text-white"
-                  }`}
+                  className={`px-5 sm:px-8 py-3 text-sm sm:text-lg font-semibold transition-all duration-300 ${currentView === "dashboard"
+                    ? "text-white border-b-2 border-orange-500 drop-shadow-[0_0_10px_rgba(255,150,0,0.5)]"
+                    : "text-gray-400 hover:text-white"
+                    }`}
                 >
                   Analytics
                 </button>
                 <button
                   onClick={() => setCurrentView("settings")}
-                  className={`px-5 sm:px-8 py-3 text-sm sm:text-lg font-semibold transition-all duration-300 ${
-                    currentView === "settings"
-                      ? "text-white border-b-2 border-orange-500 drop-shadow-[0_0_10px_rgba(255,150,0,0.5)]"
-                      : "text-gray-400 hover:text-white"
-                  }`}
+                  className={`px-5 sm:px-8 py-3 text-sm sm:text-lg font-semibold transition-all duration-300 ${currentView === "settings"
+                    ? "text-white border-b-2 border-orange-500 drop-shadow-[0_0_10px_rgba(255,150,0,0.5)]"
+                    : "text-gray-400 hover:text-white"
+                    }`}
                 >
                   Settings & Link
                 </button>
@@ -908,7 +901,7 @@ export function MonetizeInner() {
           )}
         </div>
       </div>
-      <Footer />
+      <Footer creator={props.creator} />
     </>
   );
 }

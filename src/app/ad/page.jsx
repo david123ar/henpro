@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 
 const Page = () => {
   const [adVisible, setAdVisible] = useState(false);
-  const adContainerId = "container-0edc04a5374d9021ce8e6b9f5bb01d53";
+  const adContainerId = "container-917495758f35e40004f3af3fe8c04eb8";
 
   useEffect(() => {
     const adContainer = document.getElementById(adContainerId);
@@ -48,7 +48,7 @@ const Page = () => {
     >
       {/* Ad Script */}
       <Script
-        src="//electthirteenth.com/0edc04a5374d9021ce8e6b9f5bb01d53/invoke.js"
+        src="//contemplatewaryheadquarter.com/917495758f35e40004f3af3fe8c04eb8/invoke.js"
         strategy="afterInteractive"
         data-cfasync="false"
         async

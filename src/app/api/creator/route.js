@@ -20,18 +20,31 @@ export async function GET() {
   }
 
   try {
-    const db = await connectDB();
+    // Correctly destructure the returned db object
+    const { db } = await connectDB();
+
     const creatorSetup = await db.collection(CREATOR_COLLECTION).findOne(
       { userId: userId }, // Query by the authenticated user's ID
-      { projection: { _id: 0, adsterraSmartlink: 1, creatorApiKey: 1, instagramId: 1 } }
+      // ✨ ADD 'username' to the projection so it is returned
+      {
+        projection: {
+          _id: 0,
+          adsterraSmartlink: 1,
+          creatorApiKey: 1,
+          instagramId: 1,
+          username: 1,
+        },
+      }
     );
 
     // If data is found, return it. If not found (null), it means setup hasn't been done yet.
     return NextResponse.json({ setup: creatorSetup }, { status: 200 });
-
   } catch (err) {
     console.error("GET Creator Setup DB Error:", err);
-    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
 
@@ -42,13 +55,20 @@ export async function GET() {
 export async function POST(request) {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
+  // ✨ Extract username from the session
+  const username = session?.user?.username;
 
-  if (!userId) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  if (!userId || !username) {
+    // Ensure both are present for proper saving
+    return NextResponse.json(
+      { message: "Unauthorized or missing user data" },
+      { status: 401 }
+    );
   }
 
   try {
-    const { adsterraSmartlink, creatorApiKey, instagramId } = await request.json();
+    const { adsterraSmartlink, creatorApiKey, instagramId } =
+      await request.json();
 
     // Basic Validation
     if (!adsterraSmartlink || !creatorApiKey) {
@@ -58,15 +78,18 @@ export async function POST(request) {
       );
     }
 
-    const db = await connectDB();
-    
+    // Correctly destructure the returned db object
+    const { db } = await connectDB();
+
     // Data to be inserted/updated
     const updateData = {
       $set: {
-        userId: userId, // Link to the user
+        userId: userId,
+        // ✨ Add username to the $set operator
+        username: username,
         adsterraSmartlink: adsterraSmartlink,
         creatorApiKey: creatorApiKey,
-        instagramId: instagramId || null, // Allow Instagram ID to be optional
+        instagramId: instagramId || null,
         updatedAt: new Date(),
       },
       $setOnInsert: {
@@ -75,18 +98,22 @@ export async function POST(request) {
     };
 
     // Use upsert to either update an existing document or insert a new one
-    const result = await db.collection(CREATOR_COLLECTION).updateOne(
-      { userId: userId },
-      updateData,
-      { upsert: true }
-    );
+    const result = await db
+      .collection(CREATOR_COLLECTION)
+      .updateOne({ userId: userId }, updateData, { upsert: true });
 
     return NextResponse.json(
-      { message: "Monetization setup saved successfully.", setupStatus: result.upsertedId ? "created" : "updated" },
+      {
+        message: "Monetization setup saved successfully.",
+        setupStatus: result.upsertedId ? "created" : "updated",
+      },
       { status: 200 }
     );
   } catch (err) {
     console.error("POST Creator Setup DB Error:", err);
-    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

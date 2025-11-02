@@ -39,9 +39,10 @@ export default function User(props) {
           setProfiIsOpen={setProfiIsOpen}
           profiIsOpen={profiIsOpen}
           refer={props.refer}
+          creator={props.creator}
         />
         {profiIsOpen ? (
-          <Profilo setProfiIsOpen={setProfiIsOpen} profiIsOpen={profiIsOpen} refer={props.refer}/>
+          <Profilo setProfiIsOpen={setProfiIsOpen} profiIsOpen={profiIsOpen} refer={props.refer} creator={props.creator}/>
         ) : (
           ""
         )}
@@ -51,23 +52,24 @@ export default function User(props) {
             setLogIsOpen={setLogIsOpen}
             sign={sign}
             refer={props.refer}
+            creator={props.creator}
           />
         ) : (
           ""
         )}
-        <div>
-          <Slab slabId={slabId} refer={props.refer}/>
+        <div> 
+          <Slab slabId={slabId} refer={props.refer} creator={props.creator}/>
         </div>
-        {props.id === "profile" ? <Profito refer={props.refer}/> : ""}
-        {props.id === "continue-watching" ? <MyComponent page={props.page} refer={props.refer}/> : ""}
-        {props.id === "watch-list" ? <WatchList type={props.type} ipage={props.page} refer={props.refer}/> : ""}
+        {props.id === "profile" ? <Profito refer={props.refer} creator={props.creator}/> : ""}
+        {props.id === "continue-watching" ? <MyComponent page={props.page} refer={props.refer} creator={props.creator}/> : ""}
+        {props.id === "watch-list" ? <WatchList type={props.type} ipage={props.page} refer={props.refer} creator={props.creator}/> : ""}
         {/* {props.id === "settings" ? <Settings refer={props.refer}/> : ""} */}
-        {props.id === "notification" ? <Notification refer={props.refer}/> : ""}
-        {/* {props.id === "monetize" ? <MonetizePage/> : ""} */}
+        {props.id === "notification" ? <Notification refer={props.refer} creator={props.creator}/> : ""}
+        {/* {props.id === "monetize" ? <MonetizePage creator={props.creator}/> : ""} */}
         <div>
-          <Footer/>
+          <Footer creator={props.creator}/>
         </div>
-      </SessionProvider>
+      </SessionProvider> 
     </>
   );
 }

@@ -5,9 +5,24 @@ import Link from "next/link";
 import "./slab.css";
 import { useSession } from "next-auth/react";
 import { FaSackDollar } from "react-icons/fa6";
+// ⭐️ IMPORT useSearchParams
+import { useSearchParams } from "next/navigation";
 
 export default function Slab(props) {
   const { data: session } = useSession();
+
+  // ⭐️ Get the creator parameter from the URL
+  // const searchParams = useSearchParams();
+  const creator = props.creator;
+
+  // ⭐️ Helper function to append the creator parameter to a URL
+  const getUpdatedLink = (baseLink) => {
+    if (!creator || baseLink.startsWith("http")) return baseLink;
+
+    const separator = baseLink.includes("?") ? "&" : "?";
+    return `${baseLink}${separator}creator=${creator}`;
+  };
+  // --------------------------------------------------------
 
   // Use the same avatar replacement logic as the Navbar to ensure the image loads
   const avatarSrc =
@@ -34,9 +49,8 @@ export default function Slab(props) {
         {/* Navigation Links */}
         <div className="slab-nav-links">
           <Link
-            href={`/user/profile${
-              props.refer ? `?refer=${props.refer}` : `?refer=weebsSecret`
-            }`}
+            // ⭐️ Applied creator logic
+            href={getUpdatedLink("/user/profile")}
             className={`nav-link-item ${
               props.slabId === "profile" ? "active-link" : ""
             }`}
@@ -48,9 +62,8 @@ export default function Slab(props) {
           </Link>
 
           <Link
-            href={`/user/continue-watching${
-              props.refer ? `?refer=${props.refer}` : `?refer=weebsSecret`
-            }`}
+            // ⭐️ Applied creator logic
+            href={getUpdatedLink("/user/continue-watching")}
             className={`nav-link-item ${
               props.slabId === "continue watching" ? "active-link" : ""
             }`}
@@ -62,9 +75,8 @@ export default function Slab(props) {
           </Link>
 
           <Link
-            href={`/user/watch-list${
-              props.refer ? `?refer=${props.refer}` : `?refer=weebsSecret`
-            }`}
+            // ⭐️ Applied creator logic
+            href={getUpdatedLink("/user/watch-list")}
             className={`nav-link-item ${
               props.slabId === "watch list" ? "active-link" : ""
             }`}
@@ -76,9 +88,8 @@ export default function Slab(props) {
           </Link>
 
           <Link
-            href={`/user/notification${
-              props.refer ? `?refer=${props.refer}` : `?refer=weebsSecret`
-            }`}
+            // ⭐️ Applied creator logic
+            href={getUpdatedLink("/user/notification")}
             className={`nav-link-item ${
               props.slabId === "notification" ? "active-link" : ""
             }`}
@@ -90,9 +101,8 @@ export default function Slab(props) {
           </Link>
 
           {/* <Link
-            href={`/user/settings${
-              props.refer ? `?refer=${props.refer}` : `?refer=weebsSecret`
-            }`}
+            // ⭐️ Applied creator logic
+            href={getUpdatedLink("/user/settings")}
             className={`nav-link-item ${
               props.slabId === "settings" ? "active-link" : ""
             }`}
@@ -104,9 +114,8 @@ export default function Slab(props) {
           </Link> */}
 
           <Link
-            href={`/monetize${
-              props.refer ? `?refer=${props.refer}` : `?refer=weebsSecret`
-            }`}
+            // ⭐️ Applied creator logic
+            href={getUpdatedLink("/monetize")}
             className={`nav-link-item ${
               props.slabId === "monetize" ? "active-link" : ""
             }`}

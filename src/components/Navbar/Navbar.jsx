@@ -8,6 +8,8 @@ import Link from "next/link";
 import SignInSignUpModal from "../SignSignup/SignInSignUpModal";
 import { useSession } from "next-auth/react";
 import Profilo from "../Profilo/Profilo";
+// ⭐️ IMPORT useSearchParams
+import { useSearchParams } from "next/navigation";
 
 const Navbar = (props) => {
   const [focused, setFocused] = useState(false);
@@ -18,14 +20,28 @@ const Navbar = (props) => {
   const [searchResults, setSearchResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [profiIsOpen, setProfiIsOpen] = useState(false);
-  // const [profiIsOpen, setProfiIsOpen] = useState(false);
+  const [logIsOpen, setLogIsOpen] = useState(false);
 
   const timeoutRef = useRef(null);
   const searchInputRef = useRef(null);
 
   const { data: session } = useSession();
 
-  const toggleProfile = () => setProfiIsOpen(true);
+  // ⭐️ GET creator PARAMETER
+  // const searchParams = useSearchParams();
+  const creat = props.creator;
+
+  const toggleSignInModal = (isOpen) => setLogIsOpen(isOpen);
+  const toggleProfile = () => setProfiIsOpen((prev) => !prev);
+
+  // ⭐️ HELPER FUNCTION TO APPEND CREAt
+  const getUpdatedLink = (baseLink) => {
+    if (!creat || baseLink.startsWith("http")) return baseLink;
+
+    const separator = baseLink.includes("?") ? "&" : "?";
+    return `${baseLink}${separator}creator=${creat}`;
+  };
+  // ------------------------------------
 
   // 🧭 Handle scroll effect for 'dark' background
   useEffect(() => {
@@ -60,28 +76,52 @@ const Navbar = (props) => {
       } finally {
         setIsLoading(false);
       }
-    }, 500); // debounce 0.5s
+    }, 500); // Debounce 0.5s
+
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
   }, [searchQuery]);
 
-  const [logIsOpen, setLogIsOpen] = useState(false);
-  const sign = (sign) => {
-    setLogIsOpen(sign);
-  };
-
-  const handleBlur = () => {
-    // Only unfocus if the user isn't clicking on the search dropdown itself
-    // Use a timeout to allow clicks on the dropdown children to register
+  const handleBlur = (e) => {
     setTimeout(() => {
-      if (!document.activeElement.closest(".search-dropdown")) {
+      if (
+        searchInputRef.current &&
+        !searchInputRef.current.contains(document.activeElement) &&
+        !document.activeElement.closest(".search-dropdown")
+      ) {
         setFocused(false);
       }
-    }, 100);
+    }, 150);
   };
 
   const handleMobileClose = () => {
     setShowMobileSearch(false);
     setSearchQuery("");
     setSearchResults([]);
+  };
+
+  const handleSearchLinkClick = () => {
+    setSearchQuery("");
+    setSearchResults([]);
+    setFocused(false);
+    setShowMobileSearch(false);
+  };
+
+  const getAvatarUrl = (userSession) => {
+    return (
+      userSession?.user.avatar?.replace(
+        "https://img.flawlessfiles.com/_r/100x100/100/avatar/",
+        "https://cdn.noitatnemucod.net/avatar/100x100/"
+      ) || "/default-avatar.png"
+    );
+  };
+
+  // 🔗 Helper for 'View all results' link construction (now integrates getUpdatedLink)
+  const createSearchUrl = (query) => {
+    const params = new URLSearchParams({ q: query });
+    const baseUrl = `/search?${params.toString()}`;
+    return getUpdatedLink(baseUrl); // ⭐️ Apply creator logic here
   };
 
   return (
@@ -91,24 +131,21 @@ const Navbar = (props) => {
         <SignInSignUpModal
           logIsOpen={logIsOpen}
           setLogIsOpen={setLogIsOpen}
-          sign={sign}
+          sign={toggleSignInModal}
+          creator={creat}
         />
       )}
 
-      {profiIsOpen ? (
-        <Profilo
-          setProfiIsOpen={setProfiIsOpen}
-          profiIsOpen={profiIsOpen}
-          // refer={refer}
-        />
-      ) : (
-        ""
+      {/* User Profile Modal */}
+      {profiIsOpen && (
+        <Profilo setProfiIsOpen={setProfiIsOpen} profiIsOpen={profiIsOpen} creator={creat}/>
       )}
 
       {/* Navigation Sidebar */}
       <NavSidebar
         sidebarIsOpen={sidebarIsOpen}
         setSidebarIsOpen={setSidebarIsOpen}
+        creator={creat}
       />
 
       {/* 📱 Floating mobile search bar + dropdown */}
@@ -141,7 +178,8 @@ const Navbar = (props) => {
                 return (
                   <Link
                     key={idx}
-                    href={`/watch/${safeUrl}`}
+                    // ⭐️ APPLY getUpdatedLink
+                    href={getUpdatedLink(`/watch/${safeUrl}`)}
                     className="search-item"
                     onClick={handleMobileClose}
                   >
@@ -164,7 +202,8 @@ const Navbar = (props) => {
 
               {searchResults.length > 0 && (
                 <Link
-                  href={`/search?q=${encodeURIComponent(searchQuery)}`}
+                  // ⭐️ Use createSearchUrl which includes creator
+                  href={createSearchUrl(searchQuery)}
                   className="search-view-all"
                   onClick={handleMobileClose}
                 >
@@ -187,9 +226,11 @@ const Navbar = (props) => {
             <FaBars />
           </div>
 
-          <Link href={"/"} className="logo">
+          <Link href={getUpdatedLink("/")} className="logo">
+            {" "}
+            {/* ⭐️ Added to home link */}
             <Image
-              src="/logo.png" // Assumes this is a high-contrast logo
+              src="/logo.png"
               alt="Logo"
               width={150}
               height={50}
@@ -203,10 +244,7 @@ const Navbar = (props) => {
           </Link>
 
           {/* 🧠 Desktop Search */}
-          <div
-            className={`search ${focused ? "focused" : ""}`}
-            // Inline styles simplified as most are moved to CSS
-          >
+          <div className={`search ${focused ? "focused" : ""}`}>
             <input
               ref={searchInputRef}
               type="text"
@@ -232,9 +270,10 @@ const Navbar = (props) => {
                   return (
                     <Link
                       key={idx}
-                      href={`/watch/${safeUrl}`}
+                      // ⭐️ APPLY getUpdatedLink
+                      href={getUpdatedLink(`/watch/${safeUrl}`)}
                       className="search-item"
-                      onClick={() => setSearchQuery("")}
+                      onClick={handleSearchLinkClick}
                     >
                       <img
                         src={result?.img || "/placeholder.jpg"}
@@ -254,8 +293,10 @@ const Navbar = (props) => {
                 })}
                 {searchResults.length > 0 && (
                   <Link
-                    href={`/search?q=${encodeURIComponent(searchQuery)}`}
+                    // ⭐️ Use createSearchUrl which includes creator
+                    href={createSearchUrl(searchQuery)}
                     className="search-view-all"
+                    onClick={handleSearchLinkClick}
                   >
                     View all results
                   </Link>
@@ -274,20 +315,22 @@ const Navbar = (props) => {
             <FaSearch />
           </div>
           {session ? (
-            <img
-              src={
-                // Replace the dynamic URL parts with placeholders or consistent base URL
-                session.user.avatar?.replace(
-                  "https://img.flawlessfiles.com/_r/100x100/100/avatar/",
-                  "https://cdn.noitatnemucod.net/avatar/100x100/"
-                ) || "/default-avatar.png" // Added a default placeholder
-              }
+            <Image
+              src={getAvatarUrl(session)}
+              key={session.user.avatar}
               className="profile-ico"
               onClick={toggleProfile}
               alt={session.user.username || "User Profile"}
+              width={40}
+              height={40}
+              style={{
+                borderRadius: "50%",
+                cursor: "pointer",
+                objectFit: "cover",
+              }}
             />
           ) : (
-            <div className="login" onClick={() => sign(true)}>
+            <div className="login" onClick={() => toggleSignInModal(true)}>
               Login
             </div>
           )}

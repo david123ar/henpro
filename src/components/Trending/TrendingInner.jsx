@@ -8,7 +8,7 @@ import Footer from "../footer/Footer";
 const TrendingInner = (props) => {
   return (
     <>
-      <Navbar now={false} />
+      <Navbar now={false} creator={props.creator} />
       <div
         style={{
           display: "flex",
@@ -37,14 +37,14 @@ const TrendingInner = (props) => {
       </div>
       <div className="compli">
         <div className="watc">
-          <Card data={props.data} link={`trending`} heading={"Trending"} />
+          <Card data={props.data} link={`trending`} heading={"Trending"} creator={props.creator} />
         </div>
 
         <div className="sidc">
-          <Sidebar sidebar={props.data.data.sidebar} />
+          <Sidebar sidebar={props.data.data.sidebar} creator={props.creator} />
         </div>
       </div>
-      <Footer />
+      <Footer creator={props.creator} />
     </>
   );
 };

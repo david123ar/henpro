@@ -1,11 +1,52 @@
-// import Navbar from "@/components/Navbar/Navbar";
+// app/series/page.js (or app/search/page.js, based on your routing)
+
+// Assuming connectDB is set up in "@/lib/mongoClient"
+import { connectDB } from "@/lib/mongoClient";
+import Advertize from "@/components/Advertize/Advertize";
 import Search from "@/components/Search/Search";
-// import Series from "@/components/Series/Series";
 
 export default async function SeriesPage({ searchParams }) {
-  const q = searchParams.q || 1;
+  const q = searchParams.q || ""; // The search query is expected to be 'q'
+  const creatorApiKey = searchParams.creator; // ✨ Get the creator API key
 
-  const apiUrl = `https://api.henpro.fun/api/search?q=${q}`;
+  // --- Start Dynamic Ad Link Logic ---
+  const DEFAULT_AD_LINK =
+    "https://www.revenuecpmgate.com/d3j8c16q?key=c843c816558b4282950c88ec718cf1ea";
+  let dynamicAdLink = DEFAULT_AD_LINK;
+
+  if (creatorApiKey) {
+    try {
+      // 1. Connect to MongoDB
+      const db = await connectDB();
+      // Assuming your collection is named 'creators'
+      const collection = db.collection("creators");
+
+      // 2. Fetch the creator data
+      const creatorData = await collection.findOne(
+        { username: creatorApiKey },
+        // Project to only include the smartlink for efficiency
+        { projection: { adsterraSmartlink: 1, _id: 0 } }
+      );
+
+      // 3. Update the ad link if found
+      if (creatorData && creatorData.adsterraSmartlink) {
+        dynamicAdLink = creatorData.adsterraSmartlink;
+      }
+    } catch (error) {
+      console.error(
+        "MongoDB fetch failed for creator on search page:",
+        creatorApiKey,
+        error
+      );
+      // Fallback to DEFAULT_AD_LINK
+    }
+  }
+  // --- End Dynamic Ad Link Logic ---
+
+  // --- Standard Search Data Fetch Logic ---
+  // Ensure the query parameter is correctly URL-encoded for safety
+  const encodedQ = encodeURIComponent(q);
+  const apiUrl = `https://api.henpro.fun/api/search?q=${encodedQ}`;
 
   const res = await fetch(apiUrl, {
     next: { revalidate: 300 }, // revalidate every 5 min
@@ -16,10 +57,13 @@ export default async function SeriesPage({ searchParams }) {
   }
 
   const data = await res.json();
+  // --- End Standard Data Fetch Logic ---
 
   return (
     <div className="page-wrapper">
-      <Search data={data || []} keyword={q} />
+      <Search data={data || []} keyword={q} creator={creatorApiKey}/>
+      {/* 🌟 Pass the dynamic ad link to the Advertize component */}
+      <Advertize initialAdLink={dynamicAdLink} />
     </div>
   );
 }

@@ -2,8 +2,9 @@
 import { MdClosedCaption, MdClosedCaptionDisabled } from "react-icons/md";
 import { FaClock, FaPlay } from "react-icons/fa";
 import "./RecentEpisodes.css";
+import Link from "next/link";
 
-export default function RecentEpisodes({ recentEpi = [] }) {
+export default function RecentEpisodes({ recentEpi = [], creator }) {
   const normalize = (s) => (s || "").toString().toUpperCase().trim();
 
   const labelClass = (label) => {
@@ -23,7 +24,7 @@ export default function RecentEpisodes({ recentEpi = [] }) {
 
       <div className="decent-grid">
         {recentEpi.map((ep) => (
-          <a key={ep.link} href={`/watch/${ep.link}`} className="decent-card">
+          <Link key={ep.link} href={`/watch/${ep.link}?creator=${creator}`} className="decent-card">
             <div className="image-container">
               <img src={ep.poster} alt={ep.seriesName} className="poster" />
 
@@ -67,7 +68,7 @@ export default function RecentEpisodes({ recentEpi = [] }) {
                 </p>
               </div>
             </div>
-          </a>
+          </Link>
         ))}
       </div>
     </div>

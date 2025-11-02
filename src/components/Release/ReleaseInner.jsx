@@ -8,7 +8,7 @@ import Navbar from "../Navbar/Navbar";
 const ReleaseInner = (props) => {
   return (
     <>
-      <Navbar now={false} />
+      <Navbar now={false} creator={props.creator} />
       <div
         style={{
           display: "flex",
@@ -41,14 +41,15 @@ const ReleaseInner = (props) => {
             data={props.data}
             link={`release?year=${props.year}`}
             heading={props.year + " Hentai"}
+            creator={props.creator}
           />
         </div>
 
         <div className="sidc">
-          <Sidebar sidebar={props.data.data.sidebar} />
+          <Sidebar sidebar={props.data.data.sidebar} creator={props.creator} />
         </div>
       </div>
-      <Footer />
+      <Footer creator={props.creator} />
     </>
   );
 };

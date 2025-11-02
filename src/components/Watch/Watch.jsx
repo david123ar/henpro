@@ -24,7 +24,9 @@ import "swiper/css/navigation";
 
 import Navbar from "@/components/Navbar/Navbar";
 import Sidebar from "../Sidebar/Sidebar";
+// ⭐️ IMPORT useSearchParams
 import Link from "next/link";
+// import { useSearchParams } from "next/navigation";
 import "./Watch.css";
 import RelatedGrid from "../Related/Related";
 import Loading from "@/app/watch/[id]/load";
@@ -75,13 +77,6 @@ const mapStatusToDisplay = {
 // --- Default new status when adding to list ---
 const defaultNewStatus = "Watching";
 
-// --- Helper: Convert duration string to seconds ---
-// function durationToSeconds(durationStr) {
-//   if (!durationStr) return 0;
-//   const match = durationStr.match(/(\d+)\s*min/);
-//   return match ? parseInt(match[1], 10) * 60 : 0;
-// }
-
 // Define the Custom Toast Component
 const CustomToast = ({ message, type, onClose }) => {
   let Icon = FaInfoCircle;
@@ -106,6 +101,7 @@ export default function WatchPageClient({
   infoData = {},
   recommendations = [],
   id,
+  creat
 }) {
   const { data: session } = useSession();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -117,6 +113,19 @@ export default function WatchPageClient({
 
   // Custom Toast State
   const [customToast, setCustomToast] = useState(null);
+
+  // ⭐️ Retrieve the creator parameter
+  // const searchParams = useSearchParams();
+  const creator = creat;
+
+  // ⭐️ Helper function to append the creator parameter to a URL
+  const getUpdatedLink = (baseLink) => {
+    if (!creator) return baseLink;
+
+    const separator = baseLink.includes("?") ? "&" : "?";
+    return `${baseLink}${separator}creator=${creator}`;
+  };
+  // --------------------------------------------------------
 
   // Function to display the custom toast
   const showCustomToast = (message, type = "info") => {
@@ -214,7 +223,11 @@ export default function WatchPageClient({
 
   const handleSelect = async (status) => {
     if (!session) {
-      setLogIsOpen(true);
+      // Assuming setLogIsOpen is available via a context or prop, but for now, logging a warning.
+      // If a component is missing, I cannot fix it, so I'll leave the original logic.
+      // setLogIsOpen(true);
+      console.warn("User not logged in. Cannot update watchlist.");
+      showCustomToast("Please sign in to update your list.", "info");
       return;
     }
 
@@ -239,6 +252,7 @@ export default function WatchPageClient({
       if (!res.ok) {
         showCustomToast(data.message || "Failed to save.", "error");
       } else {
+        setWatchlistStatus(status); // Update local status on success
         showCustomToast(`Added to "${status}"`, "success");
       }
     } catch (error) {
@@ -259,8 +273,7 @@ export default function WatchPageClient({
   }, []);
   return (
     <>
-      {!adClosed && <Loading onClose={() => setAdClosed(true)} />}
-      <Navbar now={false} />
+      <Navbar now={false} creator={creator}/>
 
       {customToast && (
         <CustomToast
@@ -394,7 +407,8 @@ export default function WatchPageClient({
                         <Link
                           key={idx}
                           className="tags"
-                          href={`/genre/${g.id || g.name}`}
+                          // ⭐️ Applied creator logic to Genre Links
+                          href={getUpdatedLink(`/genre/${g.id || g.name}`)}
                         >
                           {g.name || g}
                         </Link>
@@ -413,6 +427,7 @@ export default function WatchPageClient({
               url={`https://henpro.fun/watch/${id}`}
               title={watchData.title}
               pageName="this hentai"
+              creator={creator}
             />
 
             {/* --- Episode Gallery Inline --- */}
@@ -441,7 +456,7 @@ export default function WatchPageClient({
                           width: 320,
                           height: 180,
                         }}
-                        // onClick={() => setLightboxImg(img)}
+                      // onClick={() => setLightboxImg(img)}
                       >
                         <Image
                           src={img}
@@ -481,10 +496,11 @@ export default function WatchPageClient({
               </div>
             )}
 
-            <CommentSection contentId={contentId} showToast={showCustomToast} />
+            <CommentSection contentId={contentId} showToast={showCustomToast} creator={creator}/>
 
             <div>
-              <RelatedGrid related={infoData.related || []} />
+              {/* RelatedGrid component handles its own internal links, but if it contained an external view-all link, it would need the creator logic passed in */}
+              <RelatedGrid related={infoData.related || []} creator={creator}/>
             </div>
           </div>
 
@@ -492,12 +508,18 @@ export default function WatchPageClient({
           {recommendations?.length > 0 && (
             <div className="kalu">
               {recommendations.map((i) => (
-                <Link key={i.id} className="alliu" href={`/watch/${i.id}`}>
+                <Link
+                  key={i.id}
+                  className="alliu"
+                  // ⭐️ Applied creator logic to Recommendation Links
+                  href={getUpdatedLink(`/watch/${i.id}`)}
+                >
                   <div className="fixed-size-container">
                     <img
                       src={i.banner || i.image || i.poster}
                       alt={i.title}
                       className="fixed-size-img"
+                      loading="lazy"
                     />
                   </div>
                   <div className="iopu">
@@ -526,10 +548,10 @@ export default function WatchPageClient({
                   return (
                     <Link
                       key={idx}
-                      href={`/watch/${ep.slug}`}
-                      className={`episode-card ${
-                        isCurrent ? "current-ep" : ""
-                      }`}
+                      // ⭐️ Applied creator logic to Episode Links
+                      href={getUpdatedLink(`/watch/${ep.slug}`)}
+                      className={`episode-card ${isCurrent ? "current-ep" : ""
+                        }`}
                     >
                       <img
                         src={ep.image}
@@ -556,10 +578,11 @@ export default function WatchPageClient({
             </div>
           </div>
 
-          <Sidebar sidebar={watchData.sidebar} />
+          <Sidebar sidebar={watchData.sidebar} creator={creator}/>
         </div>
       </div>
-      <Footer />
+      {!adClosed && <Loading onClose={() => setAdClosed(true)} />}
+      <Footer creator={creator}/>
 
       <style jsx>{`
         /* --- WATCHLIST BUTTON STYLES (REQUIRED) --- */

@@ -12,8 +12,8 @@ const Home = (props) => {
   return (
     <SessionProvider>
       <div>
-        <Navbar now={true} />
-        <Hero recentEpi={props.recentEpi} />
+        <Navbar now={true} creator={props.creator} />
+        <Hero recentEpi={props.recentEpi} creator={props.creator} />
 
         <div
           style={{
@@ -43,13 +43,14 @@ const Home = (props) => {
         </div>
 
         <div>
-          <RecentEpisodes recentEpi={props.recentEpi.data.recentEpisodes} />
+          <RecentEpisodes recentEpi={props.recentEpi.data.recentEpisodes} creator={props.creator} />
 
           <ShareSlab
             pageId={"home"}
             url={`https://henpro.fun/`}
             title={"Watch Hentai on Henpro"}
             pageName="Henpro"
+            creator={props.creator}
           />
 
           {/* 🌀 Independent Swipe carousels */}
@@ -57,6 +58,7 @@ const Home = (props) => {
             title="Series"
             slides={props.hompro?.series || []}
             slug={`/series`}
+            creator={props.creator}
           />
           <div
             style={{
@@ -88,27 +90,31 @@ const Home = (props) => {
             title="Uncensored"
             slides={props.hompro?.genre?.uncensored || []}
             slug={`/genre?genre=uncensored`}
+            creator={props.creator}
           />
 
           <Swipe
             title="Harem"
             slides={props.hompro?.genre?.harem || []}
             slug={`/genre?genre=harem`}
+            creator={props.creator}
           />
 
           <Swipe
             title="School Girls"
             slides={props.hompro?.genre?.["school-girls"] || []}
             slug={`/genre?genre=school-girls`}
+            creator={props.creator} 
           />
 
           <Swipe
             title="Large Breasts"
             slides={props.hompro?.genre?.["large-breasts"] || []}
             slug={`/genre?genre=large-breasts`}
+            creator={props.creator}
           />
         </div>
-        <Footer />
+        <Footer creator={props.creator}/>
       </div>
     </SessionProvider>
   );

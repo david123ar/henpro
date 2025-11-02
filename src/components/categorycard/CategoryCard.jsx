@@ -8,7 +8,7 @@ import Loader from "@/component/Loader/Loader";
 // import Error from "@/component/error/Error";
 import PageSlider from "@/component/pageslider/PageSlider";
 import SidecardLoader from "@/component/Loader/SidecardLoader";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation"; // ⬅️ Import useSearchParams
 import "./category.css";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
@@ -17,22 +17,31 @@ import Script from "next/script";
 import Share from "../Share/Share";
 
 export default function Category({ path, label, pagel, refer }) {
+  const router = useRouter();
+  const searchParams = useSearchParams(); // ⬅️ Get search params
+  const creatorParam = searchParams.get("creator"); // ⬅️ Get creator param
+
   const [selectL, setSelectL] = useState("EN");
   const lang = (lang) => {
     setSelectL(lang);
   };
-  const [searchParams, setSearchParams] = useState(pagel);
+  // 'pagel' is passed as a prop, but we still need the full search params
+  const [urlPage, setUrlPage] = useState(pagel);
   const [categoryInfo, setCategoryInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
-  const page = parseInt(searchParams) || 1;
+  const page = parseInt(urlPage) || 1; // Use local state for page
 
   const [homeInfo, setHomeInfo] = useState(null);
   const [homeInfoLoading, setHomeInfoLoading] = useState(true);
-  const router = useRouter();
 
-  // Fetch Home Info
+  // Helper to build the creator query part for URL pushing
+  const getCreatorQuery = (prefix = "&") => {
+    return creatorParam ? `${prefix}creator=${creatorParam}` : "";
+  };
+
+  // Fetch Home Info (No change needed)
   useEffect(() => {
     const fetchHomeInfo = async () => {
       try {
@@ -49,12 +58,25 @@ export default function Category({ path, label, pagel, refer }) {
     fetchHomeInfo();
   }, []);
 
-  // Fetch Category Info
+  // Fetch Category Info (Updated logic)
   useEffect(() => {
     const fetchCategoryInfo = async () => {
       setLoading(true);
       try {
-        const data = await getCategoryInfo(path, page);
+        // ⬅️ Adjust the path for the API call if 'creator' exists
+        let fetchPath = path;
+        if (creatorParam) {
+          // Assuming getCategoryInfo expects a clean path/slug,
+          // and we need to pass creator as a separate param
+          // OR include it in the path string with a '?'
+          // Here, we pass it as a parameter if the path doesn't already have query params
+          const pathSeparator = path.includes("?") ? "&" : "?";
+          fetchPath = `${path}${pathSeparator}creator=${creatorParam}`;
+        }
+
+        // Pass the potentially updated path and page number
+        const data = await getCategoryInfo(fetchPath, page);
+
         setCategoryInfo(data.data);
         setTotalPages(data.totalPages);
         setLoading(false);
@@ -65,8 +87,9 @@ export default function Category({ path, label, pagel, refer }) {
         setLoading(false);
       }
     };
+    // The dependency array must include 'creatorParam' to refetch when it changes
     fetchCategoryInfo();
-  }, [path, page]);
+  }, [path, page, creatorParam]); // ⬅️ Added creatorParam dependency
 
   // Error handling redirects
   if (loading) return <Loader type="category" />;
@@ -79,9 +102,23 @@ export default function Category({ path, label, pagel, refer }) {
     return null;
   }
 
-  // Handle page change
+  // Handle page change (Updated logic)
   const handlePageChange = (newPage) => {
-    setSearchParams(String(newPage));
+    setUrlPage(String(newPage)); // Update local state for immediate re-render and re-fetch
+
+    // 1. Determine the path to push (base path, potentially including genre/year)
+    // The 'path' prop seems to already contain the base route/slug (e.g., 'genre/action')
+    let urlToPush = `/${path}`;
+
+    // 2. Add the page parameter
+    // Determine if '?' or '&' is needed before 'page='
+    const initialSeparator = path.includes("?") ? "&" : "?";
+    urlToPush += `${initialSeparator}page=${newPage}`;
+
+    // 3. Append the creator parameter if it exists
+    urlToPush += getCreatorQuery();
+
+    router.push(urlToPush);
   };
 
   return (
@@ -111,8 +148,10 @@ export default function Category({ path, label, pagel, refer }) {
           {/* Share Anime Banner */}
           <div className="w-full">
             <Share
-              ShareUrl={`https://shoko.fun/${path}${
-                refer ? `?refer=${refer}` : `?refer=weebsSecret`
+              ShareUrl={`https://shoko.fun/${path}${getCreatorQuery("?")}${
+                refer
+                  ? `${creatorParam ? "&" : "?"}refer=${refer}`
+                  : `${creatorParam ? "&" : "?"}refer=weebsSecret`
               }`}
               arise={label?.split?.("/")?.pop() || ""}
             />
@@ -160,6 +199,8 @@ export default function Category({ path, label, pagel, refer }) {
                       selectL={selectL}
                       refer={refer}
                       home={"2"}
+                      // ⬅️ Pass creatorParam to CategoryCard
+                      creator={creatorParam}
                     />
                   )}
 
@@ -168,6 +209,8 @@ export default function Category({ path, label, pagel, refer }) {
                     totalPages={totalPages}
                     handlePageChange={handlePageChange}
                     refer={refer}
+                    // ⬅️ Pass creatorParam to PageSlider
+                    creator={creatorParam}
                   />
                 </>
               )}
@@ -184,11 +227,18 @@ export default function Category({ path, label, pagel, refer }) {
                       className="mt-0"
                       selectL={selectL}
                       refer={refer}
+                      // ⬅️ Pass creatorParam to Topten
+                      creator={creatorParam}
                     />
                   )}
 
                   {homeInfo?.genres && (
-                    <Genre data={homeInfo.genres} refer={refer} />
+                    <Genre
+                      data={homeInfo.genres}
+                      refer={refer}
+                      // ⬅️ Pass creatorParam to Genre
+                      creator={creatorParam}
+                    />
                   )}
                 </>
               )}

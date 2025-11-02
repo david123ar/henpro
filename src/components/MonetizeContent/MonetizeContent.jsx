@@ -4,11 +4,11 @@ import { MonetizeInner } from "./MonetizeInner";
 import { SessionProvider } from "next-auth/react";
 // import MonetizeInner from "./MonetizeInner";
 
-const MonetizeContent = () => {
+const MonetizeContent = (props) => {
   return (
     <div>
       <SessionProvider>
-        <MonetizeInner />
+        <MonetizeInner {...props}/>
       </SessionProvider>
     </div>
   );

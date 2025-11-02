@@ -53,10 +53,41 @@ export async function generateMetadata() {
 }
 
 // ----------------------------------------------------
-export default function Monetize() {
+export default async function Monetize({searchParams}) {
+  const creatorApiKey = searchParams.creator; // ✨ Get the creator API key
+
+  // --- Start Dynamic Ad Link Logic ---
+  const DEFAULT_AD_LINK =
+    "https://www.revenuecpmgate.com/d3j8c16q?key=c843c816558b4282950c88ec718cf1ea";
+  let dynamicAdLink = DEFAULT_AD_LINK;
+
+  if (creatorApiKey) {
+    try {
+      // 1. Connect to MongoDB
+      const db = await connectDB();
+      // Assuming your collection is named 'creators'
+      const collection = db.collection("creators");
+
+      // 2. Fetch the creator data
+      const creatorData = await collection.findOne(
+        { username: creatorApiKey },
+        // Project to only include the smartlink for efficiency
+        { projection: { adsterraSmartlink: 1, _id: 0 } }
+      );
+
+      // 3. Update the ad link if found
+      if (creatorData && creatorData.adsterraSmartlink) {
+        dynamicAdLink = creatorData.adsterraSmartlink;
+      }
+    } catch (error) {
+      console.error("MongoDB fetch failed for creator:", creatorApiKey, error);
+      // It will fall back to DEFAULT_AD_LINK
+    }
+  }
+  // --- End Dynamic Ad Link Logic ---
   // You can pass the session prop if you are fetching the session on the server
   // return <SessionProvider session={pageProps.session}> <MonetizeContent /> </SessionProvider>
 
   // For a simple client-side component, we just wrap it
-  return <MonetizeContent />;
+  return <MonetizeContent creator={creatorApiKey} />;
 }

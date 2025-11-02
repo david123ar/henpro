@@ -2,10 +2,20 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { FaPlay } from "react-icons/fa";
+import { useSearchParams } from "next/navigation"; // ⬅️ Import the hook
 import "./RelatedGrid.css"; // Import CSS file
 
-export default function RelatedGrid({ related = [] }) {
+export default function RelatedGrid({ related = [] , creator }) {
   const [cssLoaded, setCssLoaded] = useState(false);
+  
+  // ⬅️ Get the current search parameters
+  // const searchParams = useSearchParams();
+  const creatorParam = creator;
+
+  // Helper function to build the query string part
+  const getCreatorQuery = () => {
+    return creatorParam ? `?creator=${creatorParam}` : "";
+  };
 
   useEffect(() => {
     setCssLoaded(true);
@@ -22,7 +32,12 @@ export default function RelatedGrid({ related = [] }) {
 
       <div className="related-grid">
         {related.map((item, index) => (
-          <Link href={`/watch/${item.link}`} key={index} className="related-card">
+          <Link 
+            // ⬅️ Updated href to include creator query
+            href={`/watch/${item.link}${getCreatorQuery()}`} 
+            key={index} 
+            className="related-card"
+          >
             <div className="related-image-wrapper">
               {cssLoaded && (
                 <img src={item.poster} alt={item.title} className="related-img" />

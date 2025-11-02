@@ -8,11 +8,14 @@ import {
   FaAngleDoubleLeft,
   FaAngleDoubleRight,
 } from "react-icons/fa";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation"; // ⬅️ Import useSearchParams
 import "./card.css";
 
-export default function Series({ data = {}, link, heading }) {
+export default function Series({ data = {}, link, heading , creator }) {
   const router = useRouter();
+  // const searchParams = useSearchParams(); // ⬅️ Get search params
+  const creatorParam = creator; // ⬅️ Get creator param
+
   const [cssLoaded, setCssLoaded] = useState(false);
   const items = data?.data?.series || [];
   const pagination = data?.data?.pagination || {
@@ -23,10 +26,31 @@ export default function Series({ data = {}, link, heading }) {
 
   useEffect(() => setCssLoaded(true), []);
 
+  // Helper function to build the creator query string
+  const getCreatorQuery = () => {
+    return creatorParam ? `&creator=${creatorParam}` : ""; // Start with '&' for appending
+  };
+
+  // Helper function to build the creator query string for the initial '?'
+  const getCreatorQueryForLink = () => {
+    return creatorParam ? `?creator=${creatorParam}` : ""; // Start with '?' for Link href
+  };
+
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
-      const separator = link.includes("?") ? "&" : "?";
-      router.push(`/${link}${separator}page=${page}`);
+      // Determine if '?' or '&' is needed before 'page='
+      // We assume 'link' is the base path (e.g., 'genre?genre=action')
+      const initialSeparator = link.includes("?") ? "&" : "?";
+
+      // Construct the full path, adding page and then the creator param
+      let newLink = `/${link}${initialSeparator}page=${page}`;
+
+      // Append the creator parameter if it exists
+      if (creatorParam) {
+        newLink += `&creator=${creatorParam}`;
+      }
+
+      router.push(newLink);
     }
   };
 
@@ -69,7 +93,10 @@ export default function Series({ data = {}, link, heading }) {
         {items.map((item, index) => (
           <Link
             key={index}
-            href={`/watch/${item.link || item.id || "#"}`}
+            // ⬅️ Preserve creator param in series links
+            href={`/watch/${
+              item.link || item.id || "#"
+            }${getCreatorQueryForLink()}`}
             className="related-card"
           >
             <div className="related-image-wrapper">

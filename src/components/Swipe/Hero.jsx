@@ -6,14 +6,30 @@ import { FaChevronLeft, FaChevronRight, FaPlay } from "react-icons/fa";
 import { motion, easeOut } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+// ⭐️ IMPORT useSearchParams
+// import { useSearchParams } from "next/navigation";
 import "swiper/css";
 import "swiper/css/navigation";
 import "./hero.css";
 
-const Swipe = ({ slides = [], title = "Recent Uploads", slug }) => {
+const Swipe = ({ slides = [], title = "Recent Uploads", slug , creator }) => {
   if (!slides?.length) return null;
 
   const uid = useId(); // unique ID per swiper
+
+  // ⭐️ Retrieve the creator parameter
+  // const searchParams = useSearchParams();
+  const creat = creator;
+
+  // ⭐️ Helper function to append the creat parameter to a URL
+  const getUpdatedLink = (baseLink) => {
+    if (!creat) return baseLink;
+
+    // Check if the link is external or already has query params
+    const separator = baseLink.includes("?") ? "&" : "?";
+    return `${baseLink}${separator}creator=${creat}`;
+  };
+  // --------------------------------------------------------
 
   const normalize = (s) => (s || "").toString().toUpperCase().trim();
   const labelClass = (label) => {
@@ -33,7 +49,11 @@ const Swipe = ({ slides = [], title = "Recent Uploads", slug }) => {
         <h2 className="crype-title">{title}</h2>
         <div className="crype-nav-group">
           {/* flex items-center gap-2 */}
-          <Link href={slug} className="crype-all">
+          <Link
+            // ⭐️ Applied creator logic to View All link
+            href={getUpdatedLink(slug)}
+            className="crype-all"
+          >
             View All
           </Link>
           <div className="crype-nav-btns">
@@ -108,7 +128,8 @@ const Swipe = ({ slides = [], title = "Recent Uploads", slug }) => {
               className="crype-card-inner"
             >
               <Link
-                href={`/watch/${slide.link}`}
+                // ⭐️ Applied creator logic to individual watch link
+                href={getUpdatedLink(`/watch/${slide.link}`)}
                 className="crype-image-wrapper"
               >
                 <Image

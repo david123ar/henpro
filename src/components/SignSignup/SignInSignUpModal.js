@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { imageData } from "@/data/imageData"; // Assuming this path is correct
 import "./signmodal.css";
-import { useRouter } from "next/navigation";
+// ⭐️ IMPORT useSearchParams
+// import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import {
   AiOutlineEye,
@@ -11,6 +12,7 @@ import {
   AiOutlineClose,
 } from "react-icons/ai";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const getRandomImage = () => {
   const categories = Object.keys(imageData.hashtags);
@@ -32,6 +34,19 @@ const SignInSignUpModal = (props) => {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
+  // ⭐️ Retrieve the creator parameter
+  // const searchParams = useSearchParams();
+  const creator = props.creator;
+
+  // ⭐️ Helper function to append the creator parameter to a URL
+  const getUpdatedLink = (baseLink) => {
+    if (!creator) return baseLink;
+
+    const separator = baseLink.includes("?") ? "&" : "?";
+    return `${baseLink}${separator}creator=${creator}`;
+  };
+  // --------------------------------------------------------
+
   useEffect(() => {
     if (isSignUp) setAvatar(getRandomImage());
   }, [isSignUp]);
@@ -48,18 +63,24 @@ const SignInSignUpModal = (props) => {
     setLoading(true);
 
     if (!/^[a-zA-Z0-9_]{3,30}$/.test(username)) {
-      toast.error("Username must be 3–30 characters and contain only letters, numbers, or underscores.");
+      toast.error(
+        "Username must be 3–30 characters and contain only letters, numbers, or underscores."
+      );
       setLoading(false);
       return;
     }
+
+    // ⭐️ Use creator for registration referral, falling back to props.refer for compatibility
+    const referralId = creator || props.refer;
 
     const payload = {
       email,
       password,
       username,
       avatar,
-      ...(props.refer &&
-        /^[a-zA-Z0-9_]{3,30}$/.test(props.refer) && { refer: props.refer }),
+      // ⭐️ Include creator/referralId in the payload if valid
+      ...(referralId &&
+        /^[a-zA-Z0-9_]{3,30}$/.test(referralId) && { refer: referralId }),
     };
 
     const res = await fetch("/api/auth/signup", {
@@ -80,7 +101,11 @@ const SignInSignUpModal = (props) => {
   const handleSignIn = async () => {
     setLoading(true);
 
-    const result = await signIn("credentials", { email, password, redirect: false });
+    const result = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
 
     setLoading(false);
 
@@ -99,6 +124,7 @@ const SignInSignUpModal = (props) => {
     }
 
     toast.success("Logged in successfully!");
+    props.setLogIsOpen(false); // Close modal on successful sign-in
   };
 
   const handleSignOut = async () => {
@@ -106,6 +132,7 @@ const SignInSignUpModal = (props) => {
     await signOut({ redirect: false });
     setLoading(false);
     toast.success("Signed out successfully!");
+    props.setLogIsOpen(false); // Close modal on sign-out
   };
 
   const handleForgotPassword = async () => {
@@ -121,7 +148,8 @@ const SignInSignUpModal = (props) => {
     const data = await res.json();
     setLoading(false);
 
-    if (!res.ok) return toast.error(data.message || "Failed to send reset link");
+    if (!res.ok)
+      return toast.error(data.message || "Failed to send reset link");
     toast.success("Password reset email sent! Check your inbox.");
   };
 
@@ -162,10 +190,10 @@ const SignInSignUpModal = (props) => {
               alt="Profile"
               className="profile-avatar"
             />
-            {props.landing ? (
-              // Note: The inline styles here are overridden by the dedicated CSS below for a consistent look.
+            {!props.landing ? (
               <Link
-                href="/home"
+                // ⭐️ Applied creator logic
+                href={getUpdatedLink("/user/profile")}
                 style={{
                   backgroundColor: "#ff9741", // New Theme Color
                   color: "#1a1a1a",
@@ -177,10 +205,9 @@ const SignInSignUpModal = (props) => {
                   display: "inline-block",
                 }}
               >
-                Start Earning
+                Visit Profile
               </Link>
             ) : (
-               // Note: The inline styles here are overridden by the dedicated CSS below for a consistent look.
               <button
                 onClick={handleSignOut}
                 disabled={loading}
@@ -287,7 +314,7 @@ const SignInSignUpModal = (props) => {
               role="button"
               tabIndex={0}
               onClick={() => {
-                if (!loading) (isSignUp ? handleSignUp() : handleSignIn());
+                if (!loading) isSignUp ? handleSignUp() : handleSignIn();
               }}
               onKeyDown={(e) => {
                 if ((e.key === "Enter" || e.key === " ") && !loading) {

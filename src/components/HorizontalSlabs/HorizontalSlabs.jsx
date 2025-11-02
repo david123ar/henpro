@@ -2,9 +2,21 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
-export default function HorizontalSlabs({ data = [], keyword }) {
+export default function HorizontalSlabs({ data = [], keyword, creator }) {
   if (!data || data.length === 0) return null;
+
+  // const searchParams = useSearchParams();
+  const creat = creator;
+
+  // Helper function to append the creat parameter to a URL
+  const getUpdatedLink = (baseLink) => {
+    if (!creat || baseLink.startsWith("http")) return baseLink;
+
+    const separator = baseLink.includes("?") ? "&" : "?";
+    return `${baseLink}${separator}creator=${creat}`;
+  };
 
   return (
     <div className="horizontal-slabs-container">
@@ -18,10 +30,11 @@ export default function HorizontalSlabs({ data = [], keyword }) {
       <div className="slabs-wrapper">
         {data.map((item) => (
           <Link
-            href={item.link}
+            href={getUpdatedLink(item.link)}
             target="_blank"
             key={item.id}
             className="slab-link"
+            rel="noopener noreferrer"
           >
             <div className="slab">
               <div className="slab-poster">

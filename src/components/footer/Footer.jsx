@@ -3,7 +3,7 @@ import "./footer.css";
 import Image from "next/image";
 
 const Footer = () => {
-  // Assuming process.env.NEXT_PUBLIC_SITE_NAME will resolve to 'Henpro.fun' 
+  // Assuming process.env.NEXT_PUBLIC_SITE_NAME will resolve to 'Henpro.fun'
   // or a similar string that includes "pro" or "tv" logic for rendering
   const siteName = process.env.NEXT_PUBLIC_SITE_NAME || "Henpro";
 
@@ -17,7 +17,8 @@ const Footer = () => {
 
     return (
       <>
-        {base}<span className={accentClass}>{accent}</span>
+        {base}
+        <span className={accentClass}>{accent}</span>
       </>
     );
   };
@@ -29,16 +30,12 @@ const Footer = () => {
           {/* IMAGE SECTION */}
           <div className="imo">
             <div className="site-image">
-              <img
-                src="/pearl.png"
-                alt="Marin Sticker Character"
-              />
+              <img src="/pearl.png" alt="Marin Sticker Character" />
             </div>
           </div>
-          
+
           {/* TEXT CONTENT SECTION (Scrollable) */}
           <div className="site-lines">
-            
             {/* HEADING 1 */}
             <div className="line-head">
               Watch Hentai online at {renderSiteName()}
@@ -46,37 +43,35 @@ const Footer = () => {
 
             {/* PARAGRAPH 1 */}
             <div className="line-inn">
-              In {renderSiteName()} you will find a hentai haven for the latest uncensored Hentai. We
-              offer the best hentai collection in the highest possible quality
-              at 1080p from Blu-Ray rips. Many videos are licensed direct
-              downloads from the original animators, producers, or publishing
-              source company in Japan.
+              In {renderSiteName()} you will find a hentai haven for the latest
+              uncensored Hentai. We offer the best hentai collection in the
+              highest possible quality at 1080p from Blu-Ray rips. Many videos
+              are licensed direct downloads from the original animators,
+              producers, or publishing source company in Japan.
             </div>
 
             {/* PARAGRAPH 2 */}
             <div className="line-inn">
               If you're looking for the latest Hentai videos of various genres,
-              {renderSiteName()}{" "}
-              is exactly what you need. Our website is an international hub of
-              Hentai animation. Here you will find a great collection of
-              uncensored Hentai videos as well as links to sex games and porn.
-              Browse our catalog to find the most exciting and hot Hentai anime.
-              We have both old-school videos for real admirers and the latest
-              Hentai episodes for those who would like to stay up to date. We
-              stream thousands of Hentai videos in HD quality that you can watch
-              on your PC, tablet, and mobile phone.
+              {renderSiteName()} is exactly what you need. Our website is an
+              international hub of Hentai animation. Here you will find a great
+              collection of uncensored Hentai videos as well as links to sex
+              games and porn. Browse our catalog to find the most exciting and
+              hot Hentai anime. We have both old-school videos for real admirers
+              and the latest Hentai episodes for those who would like to stay up
+              to date. We stream thousands of Hentai videos in HD quality that
+              you can watch on your PC, tablet, and mobile phone.
             </div>
 
             {/* PARAGRAPH 3 */}
             <div className="line-inn">
               With
-              {renderSiteName()}
-              , you can watch the newest Hentai series and follow your favorite
-              characters. Whether you like a raw fap material or a
-              well-developed plot, we have got you covered. Here, you can find
-              Hentai that focuses on the physical aspect of love as well as
-              romance. We strive to provide the best experience to all our
-              clients, that is why you can always click the “subbed” tag to
+              {renderSiteName()}, you can watch the newest Hentai series and
+              follow your favorite characters. Whether you like a raw fap
+              material or a well-developed plot, we have got you covered. Here,
+              you can find Hentai that focuses on the physical aspect of love as
+              well as romance. We strive to provide the best experience to all
+              our clients, that is why you can always click the “subbed” tag to
               follow the plot if you do not know Japanese.
             </div>
 
@@ -134,13 +129,14 @@ const Footer = () => {
             <Image
               src="/favicon.ico"
               alt={`${siteName} Logo`}
-              width={50} 
+              width={50}
               height={50}
               className="kisan"
             />
           </div>
           <div className="headi">
-            {renderSiteName(true)} {/* Pass true to use 'col-p' for the logo text accent */}
+            {renderSiteName(true)}{" "}
+            {/* Pass true to use 'col-p' for the logo text accent */}
             <div className="copyright-text">
               <p>
                 {siteName} does not store any files on our server; we only link

@@ -11,13 +11,14 @@ import {
 import Link from "next/link";
 import CategoryCard from "./CategoryCard";
 import { useSession } from "next-auth/react";
+import { useSearchParams } from "next/navigation"; // ⬅️ Import useSearchParams
 import { toast } from "react-hot-toast";
 
 // --- Progress Adapter (Assumes API provides enriched data) ---
 const progressAdapter = (item) => {
-  // We assume the server joins watchProgress with content metadata 
+  // We assume the server joins watchProgress with content metadata
   // to provide 'totalDuration', 'poster', 'title', and 'episodeNum' (or 'epNo')
-  const contentId = item.contentKey; 
+  const contentId = item.contentKey;
 
   const watchedSec = parseFloat(item.currentTime || 0);
   const totalSec = parseFloat(item.totalDuration || 0); // Must be provided by server
@@ -42,6 +43,9 @@ const progressAdapter = (item) => {
 };
 
 const ContinueWatching = (props) => {
+  // const searchParams = useSearchParams(); // ⬅️ Get search params
+  const creatorParam = props.creator; // ⬅️ Get creator param
+
   const [watchList, setWatchList] = useState([]);
   const { status } = useSession();
   const isLoggedIn = status === "authenticated";
@@ -53,16 +57,23 @@ const ContinueWatching = (props) => {
     [props.page]
   );
 
+  // Helper to generate the creator query string for pagination links
+  const getCreatorQuery = useCallback(() => {
+    return creatorParam ? `&creator=${creatorParam}` : "";
+  }, [creatorParam]);
+
   // 🔑 Function to load progress from the API list endpoint (API Only)
   const loadApiProgress = useCallback(async () => {
     // Calling the list endpoint - must be protected on the server side
-    const response = await fetch("/api/progress/list"); 
+    const response = await fetch("/api/progress/list");
 
     if (!response.ok) {
       // Handle 401 (Not logged in) or other errors (500)
       if (response.status !== 401) {
-          console.error(`API Error: ${response.status} - ${response.statusText}`);
-          toast.error("Failed to load cloud history. Please try logging in again.");
+        console.error(`API Error: ${response.status} - ${response.statusText}`);
+        toast.error(
+          "Failed to load cloud history. Please try logging in again."
+        );
       }
       return []; // Return empty list on any failure
     }
@@ -80,13 +91,13 @@ const ContinueWatching = (props) => {
     const loadProgress = async () => {
       // 1. If loading session or not logged in, stop immediately
       if (status === "loading" || !isLoggedIn) {
-         if (status !== "loading") setIsLoading(false);
-         setWatchList([]);
-         return; 
+        if (status !== "loading") setIsLoading(false);
+        setWatchList([]);
+        return;
       }
-      
+
       setIsLoading(true);
-      
+
       try {
         // 2. Fetch data from the API only
         const list = await loadApiProgress();
@@ -107,7 +118,6 @@ const ContinueWatching = (props) => {
   const getPage = (pageNumber) =>
     watchList.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
   const data = getPage(currentPage);
-
 
   const useArr = useMemo(() => {
     if (totalPages <= 1) return [];
@@ -147,7 +157,8 @@ const ContinueWatching = (props) => {
           refer={props.refer}
           cardStyle="rounded"
           className="w-full"
-          isLoggedIn={isLoggedIn} 
+          isLoggedIn={isLoggedIn}
+          creator={creatorParam} // ⬅️ Pass creator param to CategoryCard
         />
       </div>
 
@@ -156,16 +167,20 @@ const ContinueWatching = (props) => {
           {currentPage > 1 && (
             <>
               <Link
-                href={`/user/continue-watching?page=1&refer=${props.refer}`}
+                // ⬅️ UPDATED: Append creator param
+                href={`/user/continue-watching?page=1&refer=${
+                  props.refer
+                }${getCreatorQuery()}`}
                 className="pagin-tile"
                 aria-label="First Page"
               >
                 <FaAngleDoubleLeft />
               </Link>
               <Link
+                // ⬅️ UPDATED: Append creator param
                 href={`/user/continue-watching?page=${currentPage - 1}&refer=${
                   props.refer
-                }`}
+                }${getCreatorQuery()}`}
                 className="pagin-tile"
                 aria-label="Previous Page"
               >
@@ -177,7 +192,10 @@ const ContinueWatching = (props) => {
           {useArr.map((pageNum) => (
             <Link
               key={pageNum}
-              href={`/user/continue-watching?page=${pageNum}&refer=${props.refer}`}
+              // ⬅️ UPDATED: Append creator param
+              href={`/user/continue-watching?page=${pageNum}&refer=${
+                props.refer
+              }${getCreatorQuery()}`}
               className={`pagin-tile ${
                 currentPage === pageNum ? "pagin-colo" : ""
               }`}
@@ -190,16 +208,20 @@ const ContinueWatching = (props) => {
           {currentPage < totalPages && (
             <>
               <Link
+                // ⬅️ UPDATED: Append creator param
                 href={`/user/continue-watching?page=${currentPage + 1}&refer=${
                   props.refer
-                }`}
+                }${getCreatorQuery()}`}
                 className="pagin-tile"
                 aria-label="Next Page"
               >
                 <FaAngleRight />
               </Link>
               <Link
-                href={`/user/continue-watching?page=${totalPages}&refer=${props.refer}`}
+                // ⬅️ UPDATED: Append creator param
+                href={`/user/continue-watching?page=${totalPages}&refer=${
+                  props.refer
+                }${getCreatorQuery()}`}
                 className="pagin-tile"
                 aria-label="Last Page"
               >
