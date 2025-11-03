@@ -21,7 +21,7 @@ export async function GET() {
 
   try {
     // Correctly destructure the returned db object
-    const { db } = await connectDB();
+    const db = await connectDB();
 
     const creatorSetup = await db.collection(CREATOR_COLLECTION).findOne(
       { userId: userId }, // Query by the authenticated user's ID
@@ -79,7 +79,7 @@ export async function POST(request) {
     }
 
     // Correctly destructure the returned db object
-    const { db } = await connectDB();
+    const db = await connectDB();
 
     // Data to be inserted/updated
     const updateData = {
