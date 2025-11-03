@@ -33,12 +33,32 @@ export default function CreatorProfileClient({ user }) {
 
       {/* 🔝 Top Ad */}
       <div className="absolute top-1 left-1/2 -translate-x-1/2 w-full max-w-4xl flex justify-center z-10 p-3">
-        <iframe
-          src="https://your-top-ad-url.com"
-          className="w-full h-28 rounded-xl border-0 shadow-[0_0_15px_rgba(255,151,65,0.4)]"
-          loading="lazy"
-          title="Top Ad"
-        ></iframe>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: "10px 0",
+            backgroundColor: "#201f31",
+          }}
+        >
+          <iframe
+            src="/ad"
+            title="Sponsored Ad"
+            scrolling="no"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            style={{
+              width: "100%",
+              maxWidth: "728px",
+              height: "90px",
+              border: "none",
+              borderRadius: "10px",
+              overflow: "hidden",
+              backgroundColor: "#201f31",
+            }}
+          />
+        </div>
       </div>
 
       {/* 👤 Creator Card */}
@@ -75,7 +95,7 @@ export default function CreatorProfileClient({ user }) {
         {/* Button */}
         <motion.div whileHover={{ scale: 1.05 }}>
           <Link
-            href="/"
+            href={`/?creator=${creator.username}`}
             className="bg-[#ff9741] hover:bg-[#ff7b1f] text-black font-semibold 
                        px-6 py-3 rounded-full shadow-[0_0_20px_rgba(255,151,65,0.5)] 
                        transition-all"
@@ -87,12 +107,32 @@ export default function CreatorProfileClient({ user }) {
 
       {/* 🔻 Bottom Ad */}
       <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-full max-w-4xl flex justify-center z-10 p-3">
-        <iframe
-          src="https://your-bottom-ad-url.com"
-          className="w-full h-28 rounded-xl border-0 shadow-[0_0_15px_rgba(255,151,65,0.4)]"
-          loading="lazy"
-          title="Bottom Ad"
-        ></iframe>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: "10px 0",
+            backgroundColor: "#201f31",
+          }}
+        >
+          <iframe
+            src="/ad"
+            title="Sponsored Ad"
+            scrolling="no"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            style={{
+              width: "100%",
+              maxWidth: "728px",
+              height: "90px",
+              border: "none",
+              borderRadius: "10px",
+              overflow: "hidden",
+              backgroundColor: "#201f31",
+            }}
+          />
+        </div>
       </div>
     </div>
   );

@@ -13,7 +13,7 @@ export default async function TrendingPage({ searchParams }) {
   const DEFAULT_AD_LINK =
     "https://www.revenuecpmgate.com/d3j8c16q?key=c843c816558b4282950c88ec718cf1ea";
   let dynamicAdLink = DEFAULT_AD_LINK;
-
+ 
   if (creatorApiKey) {
     try {
       // 1. Connect to MongoDB
