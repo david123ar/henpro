@@ -1,5 +1,6 @@
 import { connectDB } from "@/lib/mongoClient";
 import CreatorProfileClient from "@/components/CreatorProfileClient/CreatorProfileClient";
+import NotFound from "@/components/NotFound/NotFound";
 
 export const dynamic = "force-dynamic";
 
@@ -14,9 +15,7 @@ export default async function CreatorPage({ params }) {
 
   if (!user) {
     return (
-      <div className="text-center text-gray-400 py-10">
-        User not found 😔
-      </div>
+      <NotFound/>
     );
   }
 

@@ -11,7 +11,7 @@ export default async function SeriesPage({ searchParams }) {
 
   // --- Start Dynamic Ad Link Logic ---
   const DEFAULT_AD_LINK =
-    "https://www.revenuecpmgate.com/d3j8c16q?key=c843c816558b4282950c88ec718cf1ea";
+    "https://contemplatewaryheadquarter.com/ukqgqrv4n?key=acf2a1b713094b78ec1cc21761e9b149";
   let dynamicAdLink = DEFAULT_AD_LINK;
 
   if (creatorApiKey) {
