@@ -2,6 +2,7 @@
 import Link from "next/link";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../footer/Footer";
+import { SessionProvider } from "next-auth/react";
 
 export default function NotFound() {
     return (
