@@ -37,7 +37,7 @@ const useViewTracker = (contentKey) => {
 
     // Set ref immediately to prevent subsequent calls
     isViewTracked.current = true;
-    
+
     // Send request to your new view tracking API endpoint
     fetch("/api/views", {
       method: "POST",
@@ -47,13 +47,10 @@ const useViewTracker = (contentKey) => {
       .then((res) => {
         if (!res.ok) {
           console.warn("View tracking failed on API side.");
-          // Optionally, set isViewTracked.current back to false on failure
-          // to retry later, but for views, fire-and-forget is often acceptable.
         }
       })
       .catch((e) => {
         console.error("Failed to send view tracking request:", e);
-        // isViewTracked.current = false; // Uncomment to retry on network error
       });
   }, [contentKey]);
 
@@ -68,7 +65,6 @@ const useViewTracker = (contentKey) => {
 const useWatchProgress = (metadata, session) => {
   const {
     contentKey,
-    videoUrl,
     title,
     totalDuration,
     poster,
@@ -117,7 +113,7 @@ const useWatchProgress = (metadata, session) => {
   const saveProgress = useCallback(
     (time) => {
       if (!contentKey || !title || !poster || !totalDuration) return;
-      if (time < 5) return; 
+      if (time < 5) return;
 
       const progressPayload = {
         contentKey,
@@ -177,14 +173,14 @@ export default function CustomVideoPlayer({ metadata }) {
   const videoRef = useRef(null);
   const containerRef = useRef(null);
 
-  const { videoUrl, contentKey } = metadata;
+  const { videoUrl, contentKey, title } = metadata;
 
   const { data: session } = useSession();
   const { getProgress, saveProgress, clearProgress } = useWatchProgress(
     metadata,
     session
   );
-  
+
   // 🔑 VIEW TRACKING: Integrate tracker hook
   const { trackView } = useViewTracker(contentKey);
 
@@ -200,7 +196,7 @@ export default function CustomVideoPlayer({ metadata }) {
   const [isReady, setIsReady] = useState(false);
   const [controlsVisible, setControlsVisible] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
-  const [skipFeedback, setSkipFeedback] = useState(null); 
+  const [skipFeedback, setSkipFeedback] = useState(null);
 
   // Settings state
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -227,7 +223,7 @@ export default function CustomVideoPlayer({ metadata }) {
     return `/api/video?url=${encodeURIComponent(videoUrl)}`;
   }, [videoUrl]);
 
-  // --- Core Player Controls (omitted for brevity, assume unchanged) ---
+  // --- Core Player Controls ---
   const togglePlay = useCallback(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -261,7 +257,7 @@ export default function CustomVideoPlayer({ metadata }) {
     },
     [saveProgress, isReady]
   );
-  
+
   const toggleFullScreen = useCallback(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -286,7 +282,6 @@ export default function CustomVideoPlayer({ metadata }) {
 
   // --- Progress Bar Handlers with Seek Preview ---
 
-  // Handler for the range input (slider)
   const handleProgressChange = (e) => {
     const video = videoRef.current;
     if (!video) return;
@@ -301,7 +296,6 @@ export default function CustomVideoPlayer({ metadata }) {
     setIsSeeking(false); // End seeking/scrubbing
   };
 
-  // Handler for setting progress (only on mouse down/move)
   const handleProgressScrub = (e) => {
     const video = videoRef.current;
     if (!video) return;
@@ -325,7 +319,6 @@ export default function CustomVideoPlayer({ metadata }) {
     }
   };
 
-  // Handler for progress bar mouse move (for preview)
   const handleProgressHover = (e) => {
     const video = videoRef.current;
     const slider = e.currentTarget;
@@ -376,13 +369,47 @@ export default function CustomVideoPlayer({ metadata }) {
     }
   };
 
+  // =======================================================================
+  // 📸 NEW: Screenshot Logic
+  // =======================================================================
+  const takeScreenshot = useCallback(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // 1. Create a canvas element
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+
+    // 2. Draw the current video frame onto the canvas
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // 3. Get the image data as a URL
+    const dataURL = canvas.toDataURL('image/png'); // Can change to 'image/jpeg'
+
+    // 4. Create a temporary link element for download
+    const a = document.createElement('a');
+    a.href = dataURL;
+
+    // Create a filename based on the video title and current time
+    const cleanTitle = (title || 'video').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    const timeStamp = formatTime(video.currentTime).replace(/:/g, '-');
+    a.download = `${cleanTitle}_${timeStamp}.png`;
+
+    // 5. Trigger the download
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    console.log(`Screenshot taken at ${formatTime(video.currentTime)}`);
+  }, [title]);
+
+
   // --- Advanced UX Events ---
 
-  // Single click: Toggle play/pause (from original code)
-  // Double click: Toggle fullscreen
   const handleVideoClick = useCallback(
     (e) => {
-      // Prevent event propagation from inner elements like the center play button
       if (e.target !== videoRef.current && e.target !== containerRef.current)
         return;
       togglePlay();
@@ -394,20 +421,15 @@ export default function CustomVideoPlayer({ metadata }) {
     toggleFullScreen();
   }, [toggleFullScreen]);
 
-  // Click to seek: clicking on the video left/right side skips 10s
   const handleContainerClick = (e) => {
-    // Only react if the screen size is > 600px OR the click target is the video/container
-    // For < 600px, double-tap takes over this logic.
     if (screenWidth <= 600 || e.target !== containerRef.current) return;
 
     const rect = containerRef.current.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     const containerWidth = rect.width;
 
-    // Check for double click for fullscreen
     if (Math.abs(e.detail) === 2) return;
 
-    // 20% of the screen width on each side triggers a skip
     const boundary = containerWidth * 0.25;
 
     if (clickX < boundary) {
@@ -417,13 +439,10 @@ export default function CustomVideoPlayer({ metadata }) {
     }
   };
 
-  // 🔑 NEW: Handle double tap for seeking on small screens
   const handleTouchStart = useCallback(
     (e) => {
-      // Check if we are on a small screen and the click is directly on the video
       if (screenWidth > 600) return;
 
-      // Only respond to single finger tap
       if (e.touches.length > 1) {
         if (doubleTapTimeout.current) clearTimeout(doubleTapTimeout.current);
         doubleTapTimeout.current = null;
@@ -436,39 +455,31 @@ export default function CustomVideoPlayer({ metadata }) {
       const rect = container.getBoundingClientRect();
       const touchX = e.touches[0].clientX - rect.left;
       const containerWidth = rect.width;
-      const boundary = containerWidth * 0.5; // 50% split for left/right seek
+      const boundary = containerWidth * 0.5;
 
       if (doubleTapTimeout.current === null) {
-        // First tap: set timeout for double tap
         doubleTapTimeout.current = setTimeout(() => {
           doubleTapTimeout.current = null;
-          // Single tap functionality (Play/Pause)
           togglePlay();
-        }, 300); // 300ms window for double tap
+        }, 300);
       } else {
-        // Second tap: Double tap detected
         clearTimeout(doubleTapTimeout.current);
         doubleTapTimeout.current = null;
 
-        // Seek logic
         if (touchX < boundary) {
-          // Left half: seek backward
           seek(-10);
         } else {
-          // Right half: seek forward
           seek(10);
         }
       }
 
-      // Prevent other touch events/clicks (like default play/pause)
       e.preventDefault();
     },
     [screenWidth, togglePlay, seek]
   );
 
-  // --- Effects and Event Listeners ---
+  // --- Effects and Event Listeners (Unchanged) ---
 
-  // Listen for window resize to update screenWidth
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -483,16 +494,15 @@ export default function CustomVideoPlayer({ metadata }) {
     };
   }, []);
 
-  // Listen for fullscreen change events
   useEffect(() => {
     const handleFullscreenChange = () => {
       setIsFullScreen(
         (!!typeof document !== "undefined" && document.fullscreenElement) ||
-          (!!typeof document !== "undefined" &&
-            document.webkitFullscreenElement) ||
-          (!!typeof document !== "undefined" &&
-            document.mozFullScreenElement) ||
-          (!!typeof document !== "undefined" && document.msFullscreenElement)
+        (!!typeof document !== "undefined" &&
+          document.webkitFullscreenElement) ||
+        (!!typeof document !== "undefined" &&
+          document.mozFullScreenElement) ||
+        (!!typeof document !== "undefined" && document.msFullscreenElement)
       );
     };
 
@@ -532,7 +542,6 @@ export default function CustomVideoPlayer({ metadata }) {
     };
   }, []);
 
-  // Load Metadata, Set Duration, and Restore Progress (UPDATED)
   const handleLoadedMetadata = useCallback(async () => {
     const video = videoRef.current;
     if (!video) return;
@@ -546,7 +555,6 @@ export default function CustomVideoPlayer({ metadata }) {
     const lastTime = await getProgress();
     const videoDuration = video.duration;
 
-    // If stored time is > 5s and not within the last 5s of the video
     if (
       lastTime.currentTime > 5 &&
       videoDuration > 0 &&
@@ -554,15 +562,11 @@ export default function CustomVideoPlayer({ metadata }) {
     ) {
       video.currentTime = lastTime.currentTime;
     }
-    
+
     // 🔑 VIEW TRACKING: Trigger view tracking here!
-    // This is the earliest point we know the video is ready to be played.
     trackView();
-  }, [getProgress, playbackSpeed, trackView]); // 🔑 trackView added to dependency array
+  }, [getProgress, playbackSpeed, trackView]);
 
-  // ... (Rest of the component remains largely the same)
-
-  // Update state, progress bar CSS
   const handleTimeUpdate = useCallback(() => {
     const video = videoRef.current;
     if (!video || !isReady) return;
@@ -571,18 +575,15 @@ export default function CustomVideoPlayer({ metadata }) {
     const percent = (time / video.duration) * 100;
 
     setCurrentTime(time);
-    // Only update progressPercent if not actively scrubbing to prevent jank
     if (!isSeeking) {
       setProgressPercent(percent);
     }
 
-    // CRITICAL: Update CSS variable for progress fill
     if (containerRef.current) {
       containerRef.current.style.setProperty("--progress-fill", `${percent}%`);
     }
   }, [isReady, isSeeking]);
 
-  // Periodic saving (5-second interval)
   useEffect(() => {
     let saveInterval = null;
     if (isReady && isPlaying) {
@@ -602,7 +603,6 @@ export default function CustomVideoPlayer({ metadata }) {
     };
   }, [isReady, isPlaying, saveProgress, contentKey]);
 
-  // Handle video end
   const handleEnded = useCallback(() => {
     setIsPlaying(false);
     clearProgress();
@@ -614,13 +614,11 @@ export default function CustomVideoPlayer({ metadata }) {
     }
   }, [clearProgress]);
 
-  // Autohide controls logic
   const handleMouseMove = useCallback(() => {
     setControlsVisible(true);
     if (controlsTimeout.current) {
       clearTimeout(controlsTimeout.current);
     }
-    // Controls hide after 3s only if playing AND settings is closed
     controlsTimeout.current = setTimeout(() => {
       if (isPlaying && !isSettingsOpen) {
         setControlsVisible(false);
@@ -628,7 +626,6 @@ export default function CustomVideoPlayer({ metadata }) {
     }, 3000);
   }, [isPlaying, isSettingsOpen]);
 
-  // Set up mouse move listener
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -642,14 +639,13 @@ export default function CustomVideoPlayer({ metadata }) {
       }
     };
   }, [handleMouseMove]);
-  
-  // --- Keyboard Shortcuts ---
+
+  // --- Keyboard Shortcuts (Updated for 'p' key for PiP) ---
   useEffect(() => {
     const handleKeyDown = (e) => {
       const video = videoRef.current;
       if (!video || !isReady) return;
 
-      // Check if focus is on a text input before accepting shortcuts
       if (
         (typeof document !== "undefined" &&
           document.activeElement?.tagName === "INPUT") ||
@@ -663,23 +659,23 @@ export default function CustomVideoPlayer({ metadata }) {
         toggleFullScreen();
       } else if (e.key === "i" || e.key === "I") {
         togglePictureInPicture();
+      } else if (e.key === "s" || e.key === "S") {
+        e.preventDefault(); // Prevent potential browser save action
+        takeScreenshot();
       } else if (e.key === " " || e.key === "k") {
         e.preventDefault();
         togglePlay();
       } else if (e.key === "m" || e.key === "M") {
         toggleMute();
       }
-      // ArrowLeft / J
       else if (e.key === "ArrowLeft" || e.key === "j") {
         e.preventDefault();
-        seek(-10); // Seek 10s backward
+        seek(-10);
       }
-      // ArrowRight / L
       else if (e.key === "ArrowRight" || e.key === "l") {
         e.preventDefault();
-        seek(10); // Seek 10s forward
+        seek(10);
       }
-      // ArrowUp / ArrowDown for Volume (10% step)
       else if (e.key === "ArrowUp") {
         e.preventDefault();
         const newVolume = Math.min(1, volume + 0.1);
@@ -700,9 +696,9 @@ export default function CustomVideoPlayer({ metadata }) {
       typeof document !== "undefined" &&
         document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isReady, togglePlay, toggleMute, toggleFullScreen, seek, volume]);
+  }, [isReady, togglePlay, toggleMute, toggleFullScreen, seek, volume, takeScreenshot]); // takeScreenshot added
 
-  // Picture-in-Picture logic (kept from original)
+  // Picture-in-Picture logic
   const togglePictureInPicture = async () => {
     const video = videoRef.current;
     if (
@@ -741,34 +737,31 @@ export default function CustomVideoPlayer({ metadata }) {
   return (
     <div
       ref={containerRef}
-      className={`custom-video-player ${isFullScreen ? "fullscreen" : ""} ${
-        isPlaying ? "is-playing" : ""
-      } ${controlsVisible ? "controls-visible" : "controls-hidden"}`}
+      className={`custom-video-player ${isFullScreen ? "fullscreen" : ""} ${isPlaying ? "is-playing" : ""
+        } ${controlsVisible ? "controls-visible" : "controls-hidden"}`}
       onDoubleClick={handleVideoDoubleClick}
       onClick={handleContainerClick}
-      // 🔑 NEW: Add touch event listener for mobile double tap
       onTouchStart={handleTouchStart}
     >
       <video
         ref={videoRef}
         src={proxyUrl}
-        onLoadedMetadata={handleLoadedMetadata} // 👈 This is where we trigger the view count
+        onLoadedMetadata={handleLoadedMetadata}
         onTimeUpdate={handleTimeUpdate}
         onEnded={handleEnded}
         onWaiting={() => setIsLoading(true)}
         onPlaying={() => setIsLoading(false)}
-        onClick={handleVideoClick} 
+        onClick={handleVideoClick}
         tabIndex={-1}
         className="video-element"
-        playsInline 
+        crossOrigin="anonymous" // IMPORTANT: Allows canvas drawing for screenshot
+        playsInline
       />
-      {/* ... (Rest of the UI remains unchanged) */}
-      
       {isLoading && (
-         <div className="player-loading-spinner">
-           <div className="spinner"></div>
-         </div>
-       )}
+        <div className="player-loading-spinner">
+          <div className="spinner"></div>
+        </div>
+      )}
 
       {/* Skip Feedback Overlay */}
       {skipFeedback && (
@@ -801,9 +794,8 @@ export default function CustomVideoPlayer({ metadata }) {
             {[0.5, 0.75, 1.0, 1.25, 1.5, 2.0].map((speed) => (
               <button
                 key={speed}
-                className={`speed-button ${
-                  playbackSpeed === speed ? "active" : ""
-                }`}
+                className={`speed-button ${playbackSpeed === speed ? "active" : ""
+                  }`}
                 onClick={() => handleSpeedChange(speed)}
               >
                 {speed === 1.0 ? "Normal" : `${speed}x`}
@@ -818,7 +810,7 @@ export default function CustomVideoPlayer({ metadata }) {
               <button
                 key={q}
                 className={`quality-button ${q === "Auto" ? "active" : ""}`}
-                // Placeholder functionality
+              // Placeholder functionality
               >
                 {q}
               </button>
@@ -830,7 +822,6 @@ export default function CustomVideoPlayer({ metadata }) {
       {/* Controls Bar */}
       <div
         className={`player-controls ${controlsVisible ? "visible" : ""}`}
-        // Use onMouseEnter/onMouseLeave to prevent auto-hiding while interacting with controls
         onMouseEnter={() => {
           if (controlsTimeout.current) clearTimeout(controlsTimeout.current);
           setControlsVisible(true);
@@ -855,8 +846,8 @@ export default function CustomVideoPlayer({ metadata }) {
           max="100"
           step="0.01"
           value={progressPercent}
-          onChange={handleProgressChange} // On change (user releases click)
-          onInput={handleProgressScrub} // On input (user scrubs/drags)
+          onChange={handleProgressChange}
+          onInput={handleProgressScrub}
           onMouseMove={handleProgressHover}
           onMouseLeave={handleProgressLeave}
           className="progress-slider"
@@ -979,13 +970,12 @@ export default function CustomVideoPlayer({ metadata }) {
             </span>
           </div>
 
-          {/* Right Controls (Settings, PiP, Fullscreen) */}
+          {/* Right Controls (Settings, Screenshot, PiP, Fullscreen) */}
           <div className="controls-group">
             {/* Settings Button */}
             <button
-              className={`control-button settings-button ${
-                isSettingsOpen ? "active" : ""
-              }`}
+              className={`control-button settings-button ${isSettingsOpen ? "active" : ""
+                }`}
               onClick={() => setIsSettingsOpen(!isSettingsOpen)}
               aria-label="Settings"
             >
@@ -1002,23 +992,40 @@ export default function CustomVideoPlayer({ metadata }) {
               </svg>
             </button>
 
-            {/* Picture-in-Picture Button */}
-            {typeof document !== "undefined" &&
-              document.pictureInPictureEnabled && (
-                <button
-                  onClick={togglePictureInPicture}
-                  className="control-button pip-button"
-                  aria-label="Toggle Picture-in-Picture"
-                >
-                  <svg
-                    viewBox="0 0 16 16" // <-- FIXED SIZE
-                    fill="currentColor" // <-- Using fill for glyphs
-                  >
-                    <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h13A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 12.5zM1.5 3a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5z" />
-                    <path d="M8 8.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5z" />
-                  </svg>
-                </button>
-              )}
+            {/* 📸 NEW: Screenshot Button */}
+            <button
+              onClick={takeScreenshot}
+              className="control-button sreen-sht"
+              aria-label="Take screenshot (S)"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor" 
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+            </button>
+
+            {/* PiP Button */}
+            <button
+              onClick={togglePictureInPicture}
+              className="control-button pip-button"
+              aria-label="Toggle Picture-in-Picture"
+            >
+              <svg
+                viewBox="0 0 16 16" // <-- FIXED SIZE
+                fill="currentColor" // <-- Using fill for glyphs
+              >
+                <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h13A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 12.5zM1.5 3a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5z" />
+                <path d="M8 8.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5z" />
+              </svg>
+            </button>
+
 
             {/* Fullscreen Button */}
             <button

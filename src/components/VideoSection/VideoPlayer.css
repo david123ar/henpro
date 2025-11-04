@@ -457,3 +457,9 @@
     max-width: 300px;
   }
 }
+
+@media (max-width: 420px) {
+  .sreen-sht {
+    display: none;
+  }
+}
