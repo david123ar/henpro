@@ -45,7 +45,7 @@ export default function CreatorProfileClient({ user }) {
             style={{
               width: "100%",
               maxWidth: "728px",
-              height: "90%",
+              height: "90px",
               border: "none",
               borderRadius: "10px",
               backgroundColor: "#201f31",
@@ -61,8 +61,8 @@ export default function CreatorProfileClient({ user }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="relative backdrop-blur-xl bg-[#1a1a1a]/80 border border-[#ff9741]/30 
-                     shadow-[0_0_25px_rgba(255,151,65,0.25)] rounded-2xl p-6 sm:p-8 
-                     w-[90%] max-w-sm h-[85%] text-center flex flex-col items-center justify-center"
+                     shadow-[0_0_25px_rgba(255,151,65,0.25)] rounded-2xl p-6 sm:p-6 
+                     w-[90%] max-w-sm h-[70%] text-center flex flex-col items-center justify-center"
         >
           {/* Avatar */}
           <motion.img
@@ -114,7 +114,7 @@ export default function CreatorProfileClient({ user }) {
             style={{
               width: "100%",
               maxWidth: "728px",
-              height: "90%",
+              height: "90px",
               border: "none",
               borderRadius: "10px",
               backgroundColor: "#201f31",
