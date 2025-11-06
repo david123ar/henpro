@@ -39,7 +39,7 @@ export default function Loading({ onClose }) {
             src="/ad"
             title="Sponsored Ad"
             scrolling="no"
-            loading="lazy"
+
             referrerPolicy="no-referrer-when-downgrade"
             style={{
               width: "100%",

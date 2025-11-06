@@ -12,11 +12,11 @@ export default function CreatorProfileClient({ user }) {
     bio: "No description available.",
   };
 
-  const backgroundImageUrl = "/banner.webp"; // Your background image URL
+  const backgroundImageUrl = "/banner.webp"; // Background image
 
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-[100vh] text-white overflow-hidden bg-[#0b0b0b]">
-      {/* 🌆 Background image */}
+    <div className="relative flex flex-col items-center justify-between h-screen text-white overflow-hidden bg-[#0b0b0b]">
+      {/* 🌆 Background Image */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <Image
           src={backgroundImageUrl}
@@ -28,25 +28,19 @@ export default function CreatorProfileClient({ user }) {
         />
       </div>
 
-      {/* Gradient overlay for readability */}
+      {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent"></div>
 
       {/* 🔝 Top Ad */}
-      <div className="absolute top-1 left-1/2 -translate-x-1/2 w-full max-w-4xl flex justify-center z-10 p-3">
+      <div className="w-full max-w-4xl flex justify-center z-10 p-2 mt-2">
         <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            padding: "10px 0",
-            backgroundColor: "#201f31",
-          }}
+          className="flex justify-center items-center w-full"
+          style={{ backgroundColor: "#201f31", borderRadius: "10px" }}
         >
           <iframe
             src="/ad"
             title="Sponsored Ad"
             scrolling="no"
-
             referrerPolicy="no-referrer-when-downgrade"
             style={{
               width: "100%",
@@ -54,14 +48,13 @@ export default function CreatorProfileClient({ user }) {
               height: "90px",
               border: "none",
               borderRadius: "10px",
-              overflow: "hidden",
               backgroundColor: "#201f31",
             }}
           />
         </div>
       </div>
 
-      {/* 👤 Creator Card */}
+      {/* 👤 Creator Card (centered content) */}
       <motion.div
         initial={{ opacity: 0, y: 25 }}
         animate={{ opacity: 1, y: 0 }}
@@ -106,21 +99,15 @@ export default function CreatorProfileClient({ user }) {
       </motion.div>
 
       {/* 🔻 Bottom Ad */}
-      <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-full max-w-4xl flex justify-center z-10 p-3">
+      <div className="w-full max-w-4xl flex justify-center z-10 p-2 mb-2">
         <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            padding: "10px 0",
-            backgroundColor: "#201f31",
-          }}
+          className="flex justify-center items-center w-full"
+          style={{ backgroundColor: "#201f31", borderRadius: "10px" }}
         >
           <iframe
             src="/ad"
             title="Sponsored Ad"
             scrolling="no"
-
             referrerPolicy="no-referrer-when-downgrade"
             style={{
               width: "100%",
@@ -128,7 +115,6 @@ export default function CreatorProfileClient({ user }) {
               height: "90px",
               border: "none",
               borderRadius: "10px",
-              overflow: "hidden",
               backgroundColor: "#201f31",
             }}
           />
