@@ -32,7 +32,7 @@ export default function CreatorProfileClient({ user }) {
       <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
 
       {/* 🔝 Top Ad (15%) */}
-      <div className="flex justify-center items-center flex-[0.15] z-10">
+      <div className="flex justify-center items-center z-10">
         <div
           className="flex justify-center items-center w-full max-w-4xl h-full"
           style={{ backgroundColor: "#201f31" }}
@@ -45,7 +45,7 @@ export default function CreatorProfileClient({ user }) {
             style={{
               width: "100%",
               maxWidth: "728px",
-              height: "100%",
+              height: "90px",
               border: "none",
               borderRadius: "0",
               backgroundColor: "#201f31",
@@ -55,14 +55,14 @@ export default function CreatorProfileClient({ user }) {
       </div>
 
       {/* 👤 Creator Card (70%) */}
-      <div className="flex justify-center items-center flex-[0.7] z-10">
+      <div className="flex justify-center items-center flex-[1] z-10">
         <motion.div
           initial={{ opacity: 0, y: 25 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="relative backdrop-blur-xl bg-[#1a1a1a]/80 border border-[#ff9741]/30 
                      shadow-[0_0_25px_rgba(255,151,65,0.25)] rounded-2xl p-4 sm:p-6 
-                     w-[90%] max-w-sm h-[85%] text-center flex flex-col items-center justify-center"
+                     w-[90%] max-w-sm h-[70%] text-center flex flex-col items-center justify-center"
         >
           {/* Avatar */}
           <motion.img
@@ -101,7 +101,7 @@ export default function CreatorProfileClient({ user }) {
       </div>
 
       {/* 🔻 Bottom Ad (15%) */}
-      <div className="flex justify-center items-center flex-[0.15] z-10">
+      <div className="flex justify-center items-center z-10">
         <div
           className="flex justify-center items-center w-full max-w-4xl h-full"
           style={{ backgroundColor: "#201f31" }}
@@ -114,7 +114,7 @@ export default function CreatorProfileClient({ user }) {
             style={{
               width: "100%",
               maxWidth: "728px",
-              height: "100%",
+              height: "90px",
               border: "none",
               borderRadius: "0",
               backgroundColor: "#201f31",
