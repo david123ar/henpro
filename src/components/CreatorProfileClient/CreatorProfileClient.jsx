@@ -46,7 +46,7 @@ export default function CreatorProfileClient({ user }) {
             src="/ad"
             title="Sponsored Ad"
             scrolling="no"
-            loading="lazy"
+
             referrerPolicy="no-referrer-when-downgrade"
             style={{
               width: "100%",
@@ -120,7 +120,7 @@ export default function CreatorProfileClient({ user }) {
             src="/ad"
             title="Sponsored Ad"
             scrolling="no"
-            loading="lazy"
+
             referrerPolicy="no-referrer-when-downgrade"
             style={{
               width: "100%",
