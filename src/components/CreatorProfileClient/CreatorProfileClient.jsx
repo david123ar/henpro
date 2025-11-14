@@ -12,7 +12,7 @@ export default function CreatorProfileClient({ user }) {
   const backgroundImageUrl = "/banner.webp";
 
   return (
-    <div className="relative flex flex-col h-screen max-h-screen overflow-hidden text-white bg-[#0b0b0b]">
+    <div className="relative flex flex-col items-center content-center h-screen max-h-screen overflow-hidden text-white bg-[#0b0b0b]">
       {/* Background */}
       <div className="absolute inset-0 pointer-events-none">
         <Image
