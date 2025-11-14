@@ -13,11 +13,11 @@ export default async function CreatorPage({ params }) {
     .collection("users")
     .findOne({ username: id }, { projection: { password: 0 } });
 
-  if (!user) {
-    return (
-      <NotFound/>
-    );
-  }
+  // if (!user) {
+  //   return (
+  //     <NotFound/>
+  //   );
+  // }
 
   const userData = JSON.parse(JSON.stringify(user));
 
