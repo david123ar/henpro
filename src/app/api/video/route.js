@@ -10,9 +10,6 @@ export async function GET(req) {
 
   const videoUrl = decodeURIComponent(url);
 
-
-  
-
   try {
     const headers = {
       Referer: "https://watchhentai.net/",
