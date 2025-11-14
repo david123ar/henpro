@@ -1,6 +1,6 @@
 import { MongoClient } from "mongodb";
 
-const MONGODB_URI = "mongodb://admin:imperial_merta2030@72.60.16.199:27017/?authSource=admin";
+const MONGODB_URI = "mongodb://admin:imperial_merta2030@127.0.0.1:27017/?authSource=admin";
 const MONGODB_DB = "mydatabase";
 
 if (!MONGODB_URI) throw new Error("Please define MONGODB_URI in .env");
