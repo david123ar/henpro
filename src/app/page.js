@@ -51,7 +51,7 @@ export default async function Page({ searchParams }) {
 
   // 🗂️ Fetch latest hompro document
   const homproData = await db
-    .collection("hompro")
+    .collection("hompros")
     .findOne({}, { sort: { createdAt: -1 } });
 
   // 🧼 Convert to plain object
