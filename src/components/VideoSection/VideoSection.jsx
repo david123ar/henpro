@@ -258,6 +258,94 @@ export default function CustomVideoPlayer({ metadata }) {
     [saveProgress, isReady]
   );
 
+  const download1SecondClip = useCallback(() => {
+    const video = videoRef.current;
+    if (!video || !window.GIF) { // Check for the presence of a GIF encoder utility
+      console.error("Video element or GIF encoder utility (window.GIF) not found.");
+      // Fallback for demonstration if GIF utility isn't imported
+      alert("GIF encoder utility not available. Cannot create clip.");
+      return;
+    }
+
+    const start = video.currentTime;
+    const frameRate = 24; // Capture 24 frames per second (for a 1-second clip)
+    const totalFrames = frameRate;
+    const interval = 1 / frameRate;
+
+    // Pause the video to ensure stable frame capture
+    video.pause();
+    setIsPlaying(false);
+
+    // Initialize the GIF encoder
+    const gif = new window.GIF({
+      workers: 2, // Use 2 web workers for faster encoding
+      quality: 10, // 1 is best, 10 is good/faster
+      width: video.videoWidth,
+      height: video.videoHeight,
+      workerScript: "/path/to/gif.worker.js" // IMPORTANT: Adjust this path!
+    });
+
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+
+    let framesCaptured = 0;
+
+    const captureFrame = (time) => {
+      // Set video time exactly to the frame's start time
+      video.currentTime = time;
+
+      // Use a 'seeked' event listener to ensure the video has settled on the frame
+      const onSeeked = () => {
+        video.removeEventListener('seeked', onSeeked);
+
+        // Draw the current video frame onto the canvas
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // Add the canvas frame to the GIF
+        gif.addFrame(canvas, { delay: interval * 1000 }); // Delay in ms
+
+        framesCaptured++;
+
+        if (framesCaptured < totalFrames) {
+          // Schedule the next frame capture
+          // Using a slight timeout to prevent blocking the main thread too much
+          setTimeout(() => captureFrame(start + framesCaptured * interval), 0);
+        } else {
+          // All frames captured, now render the GIF
+          gif.render();
+        }
+      };
+
+      video.addEventListener('seeked', onSeeked);
+    };
+
+    // Listen for the GIF render process to complete
+    gif.on('finished', (blob) => {
+      // Create a download link for the GIF blob
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+
+      // Create a filename based on the video title and current time
+      const cleanTitle = (title || 'video').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const timeStamp = formatTime(start).replace(/:/g, '-');
+      a.download = `${cleanTitle}_clip_${timeStamp}_1s.gif`;
+
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url); // Clean up the object URL
+
+      console.log(`1-second clip downloaded starting at ${formatTime(start)}`);
+    });
+
+    console.log(`Starting 1-second clip capture at ${formatTime(start)}...`);
+    captureFrame(start); // Start the capture process at the current time
+
+  }, [title, videoRef, setIsPlaying]);
+
   const toggleFullScreen = useCallback(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -1001,13 +1089,27 @@ export default function CustomVideoPlayer({ metadata }) {
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="currentColor" 
+                stroke="currentColor"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               >
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
                 <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+            </button>
+
+            <button
+              onClick={download1SecondClip}
+              className="control-button clip-download sreen-sht"
+              aria-label="Download 1s clip"
+            >
+              {/* Film/Video Reel Icon */}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="3" width="7" height="7"></rect>
+                <rect x="15" y="3" width="7" height="7"></rect>
+                <rect x="2" y="14" width="7" height="7"></rect>
+                <rect x="15" y="14" width="7" height="7"></rect>
               </svg>
             </button>
 
