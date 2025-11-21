@@ -427,6 +427,46 @@
   box-shadow: 0 2px 8px rgba(255, 151, 65, 0.5);
 }
 
+/* Add this to your VideoPlayer.css */
+
+.custom-video-player .clip-processing-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7); /* Dark semi-transparent background */
+  z-index: 100; /* Ensure it's above the video */
+  color: white;
+  font-size: 1.2rem;
+}
+
+.custom-video-player .clip-processing-overlay .loading-text {
+  margin-top: 20px;
+  font-size: 0.9em;
+  opacity: 0.8;
+}
+
+/* Spinner for the button */
+.custom-video-player .button-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* --- Mobile Responsiveness Adjustments --- */
 @media (max-width: 600px) {
   .controls-group {
