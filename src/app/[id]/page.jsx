@@ -1,7 +1,7 @@
 import BioClient from "@/components/BioClient/BioClient";
 import { connectDB } from "@/lib/mongoClient";
 
-// Helper: Capitalize first letter
+// Capitalize helper
 function capitalize(str) {
   if (!str) return "";
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -14,82 +14,82 @@ export async function generateMetadata({ params }) {
 
   const userDoc = await db.collection("users").findOne({ username: param.id });
 
-  // if (!userDoc) {
-  //   return {
-  //     title: "User Not Found | Bio Link",
-  //     description: "The requested creator profile does not exist on Bio Link.",
-  //   };
-  // }
-
   const capitalizedUsername = capitalize(userDoc?.username);
 
   return {
-    title: `${capitalizedUsername}'s Profile | Bio Link`,
-    description: `Check out ${capitalizedUsername}'s profile and explore their top links, content, and more on Bio Link.`,
+    title: `${capitalizedUsername || "User"}'s Profile | Bio Link`,
+    description: `Check out ${capitalizedUsername}'s profile and explore their best content and links on Bio Link.`,
   };
 }
 
-// Page
+// PAGE
 export default async function BioPage({ params }) {
   const db = await connectDB();
-  const param = await params;
-  const username = param.id;
+  const username = params.id;
 
-  // 1. Get user by username
+  // 1. User
   const userDoc = await db
     .collection("users")
-    .findOne({ username: username }, { projection: { password: 0 } });
+    .findOne({ username }, { projection: { password: 0 } });
 
-  // Handle non-existent user gracefully
-  // if (!userDoc) {
-  //   return (
-  //     <div className="flex items-center justify-center h-screen text-white bg-black">
-  //       <p>User not found</p>
-  //     </div>
-  //   );
-  // }
-
-  const capitalizedUsername = capitalize(userDoc?.username);
+  if (!userDoc) {
+    return (
+      <div className="flex items-center justify-center h-screen text-white bg-black">
+        <p>User not found</p>
+      </div>
+    );
+  }
 
   const user = {
-    id: userDoc?._id.toString(),
-    email: userDoc?.email,
-    username: capitalizedUsername,
-    avatar: userDoc?.avatar,
-    bio: userDoc?.bio || "",
-    referredBy: userDoc?.referredBy || null,
+    id: userDoc._id.toString(),
+    email: userDoc.email,
+    username: capitalize(userDoc.username),
+    avatar: userDoc.avatar,
+    bio: userDoc.bio || "",
+    referredBy: userDoc.referredBy || null,
   };
 
-  // 2. Get creator details
-  const creatorDoc = await db.collection("creators").findOne({ username: username });
+  // 2. Creator
+  const creatorDoc = await db.collection("creators").findOne({ username });
 
   const creator = creatorDoc
     ? {
-      username: creatorDoc?.username,
-      adsterraSmartlink: creatorDoc?.adsterraSmartlink,
-      creatorApiKey: creatorDoc?.creatorApiKey,
-      instagramId: creatorDoc?.instagramId,
-    }
+        username: creatorDoc.username,
+        adsterraSmartlink: creatorDoc.adsterraSmartlink,
+        creatorApiKey: creatorDoc.creatorApiKey,
+        instagramId: creatorDoc.instagramId,
+      }
     : null;
 
-  // 3. Get Hanimelist (Replaces standard Links)
-  // We query 'hanimelists' where userId matches the current user's ID string
-  const userIdString = userDoc?._id.toString();
+  // 3. Accounts
+  const accountsDoc = await db.collection("accounts").findOne({});
 
-  const hanimeDocs = await db
-    .collection("hanimelists")
-    .find({ userId: "69206ee9338dbc93fe0d93fd" })
-    .toArray();
+  // Select account
+  let selectedAccount = "account1";
+  if (username === "SauseKing") selectedAccount = "account2";
+  if (username === "SauseLord") selectedAccount = "account3";
 
-  // Serialize data for the client component
-  const hanimeList = hanimeDocs.map((doc) => ({
-    ...doc,
-    _id: doc._id.toString(),
-    createdAt: doc.createdAt ? doc.createdAt.toISOString() : null,
-    updatedAt: doc.updatedAt ? doc.updatedAt.toISOString() : null,
-  }));
+  // Extract that account data
+  const accountData = accountsDoc?.[selectedAccount] || [];
 
-  // 4. Get Design (Optional: try to fetch design if it exists in links collection, otherwise default)
+  // Format posts
+  const accounts = {
+    accountName: selectedAccount,
+    batches: accountData.map((batch) => ({
+      batch: batch.batch,
+      startDate: batch.startDate,
+      posts: batch.posts
+        .map((post) => ({
+          ...post,
+          postingTime: post.postingTime
+            ? new Date(post.postingTime).toISOString()
+            : null,
+        }))
+        .reverse(), // REVERSED FIX
+    })),
+  };
+
+  // 4. Design
   const linksDoc = await db.collection("links").findOne({ _id: username });
   const design = linksDoc?.design || "";
 
@@ -97,8 +97,7 @@ export default async function BioPage({ params }) {
     <BioClient
       user={user}
       creator={creator}
-      hanimeList={hanimeList} // Pass the hanime list
-      links={[]} // Pass empty links as fallback since we are using hanimeList
+      accounts={accounts}
       design={design}
     />
   );

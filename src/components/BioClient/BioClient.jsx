@@ -1,19 +1,49 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import "./bio.css";
-import { themeStyles, backgroundToTheme } from "@/styles/themeStyles"; // Adjust path if needed
+import { themeStyles, backgroundToTheme } from "@/styles/themeStyles";
 import Link from "next/link";
 
-const BioClient = ({ user, creator, hanimeList = [], design }) => {
-  // Logic to determine the theme
-  const designName = design?.split("/").pop()?.split(".")[0]; // "done" from "/done.jpg"
+const BioClient = ({ user, creator, accounts = {}, design }) => {
+  // USERNAME ALWAYS LOWERCASE FOR MATCHING
+  const uname = user?.username?.toLowerCase() || "";
+
+  // ACCOUNT SELECTED FROM SERVER (already chosen)
+  // accounts = { accountName: "account1", batches: [...] }
+  const batches = accounts?.batches || [];
+
+  // THEME
+  const designName = design?.split("/")?.pop()?.split(".")[0];
   const themeKey = backgroundToTheme[designName] || "redWhiteBlack";
   const theme = themeStyles[themeKey];
 
-  // Determine the target URL (Smartlink) for the items
-  // Fallback to '#' if not set, or you could map to specific item links if available
-  const targetUrl = creator?.adsterraSmartlink || "#";
+  // -----------------------------------------
+  // FLATTEN + REVERSE + FILTER + SORT
+  // -----------------------------------------
+  const displayedPosts = useMemo(() => {
+    const now = new Date();
+
+    // 1. Reverse batch order: 3 → 2 → 1
+    const reversedBatches = [...batches].reverse();
+
+    // 2. Reverse posts inside batch & flatten
+    const allPosts = reversedBatches.flatMap(batch =>
+      batch.posts ? [...batch.posts].reverse() : []
+    );
+
+    // 3. Remove future posts
+    const published = allPosts.filter(p => {
+      const time = new Date(p.postingTime);
+      return time <= now;
+    });
+
+    // 4. Sort by latest postingTime
+    published.sort((a, b) => new Date(b.postingTime) - new Date(a.postingTime));
+
+    return published;
+  }, [batches]);
+  // -----------------------------------------
 
   return (
     <div className="page-wrapper">
@@ -25,13 +55,12 @@ const BioClient = ({ user, creator, hanimeList = [], design }) => {
         />
 
         <div className="bio-content">
-          {/* Top Ad */}
+          {/* TOP AD */}
           <div
             className="bio-ad ad-top"
             style={{
               display: "flex",
               justifyContent: "center",
-              alignItems: "center",
               padding: "10px 0",
               backgroundColor: "#201f31",
             }}
@@ -40,7 +69,6 @@ const BioClient = ({ user, creator, hanimeList = [], design }) => {
               src="/ad"
               title="Sponsored Ad"
               scrolling="no"
-
               referrerPolicy="no-referrer-when-downgrade"
               style={{
                 width: "100%",
@@ -48,13 +76,12 @@ const BioClient = ({ user, creator, hanimeList = [], design }) => {
                 height: "90px",
                 border: "none",
                 borderRadius: "10px",
-                overflow: "hidden",
                 backgroundColor: "#201f31",
               }}
             />
           </div>
 
-          {/* Avatar */}
+          {/* AVATAR */}
           <div
             className="bio-avatar"
             style={{
@@ -65,19 +92,19 @@ const BioClient = ({ user, creator, hanimeList = [], design }) => {
           >
             <img
               src={
-                user.username.toLowerCase() === "animearenax"
+                uname === "animearenax"
                   ? "/arenax.jpg"
                   : user.avatar?.replace(
-                    "https://img.flawlessfiles.com/_r/100x100/100/avatar/",
-                    "https://cdn.noitatnemucod.net/avatar/100x100/"
-                  ) || "/default-avatar.png"
+                      "https://img.flawlessfiles.com/_r/100x100/100/avatar/",
+                      "https://cdn.noitatnemucod.net/avatar/100x100/"
+                    ) || "/default-avatar.png"
               }
               alt="avatar"
               className="rounded-full w-24 h-24 object-cover"
             />
           </div>
 
-          {/* Username */}
+          {/* USERNAME */}
           <div
             className="bio-username"
             style={{
@@ -86,10 +113,10 @@ const BioClient = ({ user, creator, hanimeList = [], design }) => {
               boxShadow: theme.usernameShadow,
             }}
           >
-            {user.username || "username"}
+            {user.username}
           </div>
 
-          {/* Description */}
+          {/* BIO */}
           <div
             className="bio-description"
             style={{
@@ -101,60 +128,53 @@ const BioClient = ({ user, creator, hanimeList = [], design }) => {
             {user.bio || "Check out my sauce below!"}
           </div>
 
-          {/* Hanimelist Links (Replaces standard Links) */}
+          {/* POSTS */}
           <div
             className="bio-links"
             style={{
               scrollbarColor: `${theme.scrollbarThumb} transparent`,
             }}
           >
-            {hanimeList.map((item, index) => (
+            {displayedPosts.map((item, index) => (
               <Link
-                key={item._id || index}
-                href={`/watch/${item.contentId}?creator=${user.username}`}
+                key={item.link}
+                href={`/watch/${item.link}?creator=${user.username}`}
                 className="bio-link"
-                // target="_blank"
-                // rel="noopener noreferrer"
                 style={{
                   background: theme.linkBg,
                   color: theme.linkColor,
                   boxShadow: theme.linkShadow,
                   border: "1px solid rgba(255,255,255,0.3)",
-                  textShadow: "0 2px 4px rgba(0, 0, 0, 0.7)",
-                  transition: "all 0.2s ease",
-                  // Flex Layout for Image + Text slab
                   display: "flex",
                   alignItems: "center",
                   padding: "4px",
-                  height: "64px", // Fixed height for the slab
-                  overflow: "hidden",
+                  height: "64px",
+                  transition: "0.2s",
                 }}
-                onMouseEnter={(e) => {
+                onMouseEnter={e => {
                   e.currentTarget.style.background = theme.linkHoverBg;
                   e.currentTarget.style.boxShadow = theme.linkHoverShadow;
                   e.currentTarget.style.transform = "translateY(-2px)";
                 }}
-                onMouseLeave={(e) => {
+                onMouseLeave={e => {
                   e.currentTarget.style.background = theme.linkBg;
                   e.currentTarget.style.boxShadow = theme.linkShadow;
                   e.currentTarget.style.transform = "translateY(0)";
                 }}
               >
-                {/* Left Image (Poster) */}
+                {/* Poster */}
                 <div
                   style={{
                     width: "56px",
                     height: "56px",
-                    flexShrink: 0,
                     borderRadius: "8px",
                     overflow: "hidden",
-                    backgroundColor: "#333",
+                    background: "#333",
                     marginRight: "12px",
                   }}
                 >
                   <img
                     src={item.poster}
-                    alt={`Source ${index + 1}`}
                     style={{
                       width: "100%",
                       height: "100%",
@@ -163,31 +183,40 @@ const BioClient = ({ user, creator, hanimeList = [], design }) => {
                   />
                 </div>
 
-                {/* Middle Text */}
+                {/* Text */}
                 <div
                   style={{
                     flex: 1,
                     textAlign: "center",
-                    // Compensate for the left image to center text visually relative to the whole bar
-                    // Or leave as center of remaining space. 'center' usually looks best.
-                    paddingRight: "12px",
                     fontWeight: "600",
                     fontSize: "1.1rem",
                   }}
                 >
-                  #{index + 1} Sause
+                  #{displayedPosts.length - index} Sauce
                 </div>
               </Link>
             ))}
+
+            {displayedPosts.length === 0 && (
+              <div
+                style={{
+                  color: theme.linkColor,
+                  textAlign: "center",
+                  padding: "20px",
+                  opacity: 0.7,
+                }}
+              >
+                No content published yet.
+              </div>
+            )}
           </div>
 
-          {/* Bottom Ads */}
+          {/* BOTTOM AD */}
           <div
             className="bio-ad ad-bottom"
             style={{
               display: "flex",
               justifyContent: "center",
-              alignItems: "center",
               padding: "10px 0",
               backgroundColor: "#201f31",
             }}
@@ -196,15 +225,12 @@ const BioClient = ({ user, creator, hanimeList = [], design }) => {
               src="/ad"
               title="Sponsored Ad"
               scrolling="no"
-
-              referrerPolicy="no-referrer-when-downgrade"
               style={{
                 width: "100%",
                 maxWidth: "728px",
                 height: "90px",
                 border: "none",
                 borderRadius: "10px",
-                overflow: "hidden",
                 backgroundColor: "#201f31",
               }}
             />
