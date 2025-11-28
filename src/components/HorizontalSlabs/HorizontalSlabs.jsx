@@ -12,10 +12,11 @@ export default function HorizontalSlabs({ data = [], keyword, creator }) {
 
   // Helper function to append the creat parameter to a URL
   const getUpdatedLink = (baseLink) => {
-    if (!creat || baseLink.startsWith("http")) return baseLink;
+    const newlink = baseLink.replace("https://watchhentai.net/series/","/watch/")
+    if (!creat || newlink.startsWith("http")) return newlink;
 
-    const separator = baseLink.includes("?") ? "&" : "?";
-    return `${baseLink}${separator}creator=${creat}`;
+    const separator = newlink.includes("?") ? "&" : "?";
+    return `${newlink}${separator}creator=${creat}`;
   };
 
   return (
@@ -31,10 +32,10 @@ export default function HorizontalSlabs({ data = [], keyword, creator }) {
         {data.map((item) => (
           <Link
             href={getUpdatedLink(item.link)}
-            target="_blank"
+            // target="_blank"
             key={item.id}
             className="slab-link"
-            rel="noopener noreferrer"
+            // rel="noopener noreferrer"
           >
             <div className="slab">
               <div className="slab-poster">
