@@ -42,7 +42,7 @@ export async function GET(request) {
       placementId = 25912166;
     }
 
-    if (!apiKey) {
+    if (!apiKey) { 
       return NextResponse.json(
         { message: "API Key missing. Complete monetization setup." },
         { status: 404 }
