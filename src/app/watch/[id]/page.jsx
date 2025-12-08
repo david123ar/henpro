@@ -1,9 +1,28 @@
 // app/watch/[id]/page.js
-import { connectDB } from "@/lib/mongoClient"; // ✨ Import the DB connection utility
+import { connectDB } from "@/lib/mongoClient";
 import Advertize from "@/components/Advertize/Advertize";
-// import Navbar from "@/components/Navbar/Navbar";
 import WatchWrapper from "@/components/Watch/WatchWrapper";
 
+// --- Safe fetch helper ---
+async function safeFetchJSON(url) {
+  try {
+    const res = await fetch(url, { cache: "no-store" });
+    const text = await res.text();
+
+    try {
+      const data = JSON.parse(text);
+      return data;
+    } catch (e) {
+      console.error(`Expected JSON from ${url}, got HTML or invalid JSON:`, text);
+      return null;
+    }
+  } catch (err) {
+    console.error(`Fetch failed for ${url}:`, err);
+    return null;
+  }
+}
+
+// --- Metadata generation ---
 export async function generateMetadata({ params }) {
   function capitalizeWords(str) {
     return str
@@ -12,128 +31,84 @@ export async function generateMetadata({ params }) {
       .join(" ");
   }
 
-  const paramsId = params.id;
-  const formattedTitle = capitalizeWords(paramsId);
+  const formattedTitle = capitalizeWords(params.id);
 
   return {
     title: `Watch ${formattedTitle} Hentai Video Streams Online in 720p , 1080p HD - Henpro`,
-    description: `Enjoy your unlimited hentai & anime
-          collection. We are the definitive source for the best curated 720p /
-          1080p HD hentai videos, viewable by mobile phone and tablet, for free.`,
+    description: `Enjoy your unlimited hentai & anime collection. We are the definitive source for the best curated 720p / 1080p HD hentai videos, viewable by mobile phone and tablet, for free.`,
   };
 }
 
-// ✨ Note: Page component receives both params AND searchParams
+// --- Main page component ---
 export default async function Page({ params, searchParams }) {
   const id = params.id;
-  const creatorApiKey = searchParams.creator; // ✨ Get the creator API key
+  const creatorApiKey = searchParams.creator;
 
-  let watchData = {};
-  let infoData = {};
+  let watchData = null;
+  let infoData = null;
 
-  // --- Start Dynamic Ad Link Logic ---
+  // --- Dynamic Ad Link ---
   const DEFAULT_AD_LINK =
     "https://contemplatewaryheadquarter.com/ukqgqrv4n?key=acf2a1b713094b78ec1cc21761e9b149";
   let dynamicAdLink = DEFAULT_AD_LINK;
 
   if (creatorApiKey) {
     try {
-      // 1. Connect to MongoDB
       const db = await connectDB();
       const collection = db.collection("creators");
-
-      // 2. Fetch the creator data
       const creatorData = await collection.findOne(
         { username: creatorApiKey },
         { projection: { adsterraSmartlink: 1, _id: 0 } }
       );
-
-      // 3. Update the ad link if found
-      if (creatorData && creatorData.adsterraSmartlink) {
-        dynamicAdLink = creatorData.adsterraSmartlink;
-      }
-    } catch (error) {
-      console.error(
-        "MongoDB fetch failed for creator on watch page:",
-        creatorApiKey,
-        error
-      );
-      // Fallback to DEFAULT_AD_LINK
+      if (creatorData?.adsterraSmartlink) dynamicAdLink = creatorData.adsterraSmartlink;
+    } catch (err) {
+      console.error("MongoDB fetch failed for creator:", creatorApiKey, err);
     }
   }
-  // --- End Dynamic Ad Link Logic ---
 
+  // --- Fetch Watch & Info ---
   try {
-    // If the incoming id already targets an episode, fetch watch first
     if (id.includes("episode")) {
-      const watchRes = await fetch(
-        `https://henpro-api.vercel.app/api/watch?id=${id}`,
-        { cache: "no-store" }
-      ); // ... (rest of watch-first logic)
-      const watchJson = await watchRes.json();
+      // Fetch watch data first
+      const watchJson = await safeFetchJSON(`https://henpro-api.vercel.app/api/watch?id=${id}`);
+      if (watchJson?.success) watchData = watchJson.data;
 
-      if (watchJson.success && watchJson.data) {
-        watchData = watchJson.data;
-      } else {
-        throw new Error("Invalid watch data");
-      } // derive series id (fallback) and fetch series info
+      // Derive series ID
+      const seriesId = watchData?.seriesId || id.replace(/-episode-.*/, "-id-01");
+      const infoJson = await safeFetchJSON(`https://henpro-api.vercel.app/api/info?id=${seriesId}`);
+      if (infoJson?.success) infoData = infoJson.data;
 
-      const seriesId =
-        watchData.seriesId || id.replace(/-episode-.*/, "-id-01");
+    } else {
+      // Fetch info first
+      const infoJson = await safeFetchJSON(`https://henpro-api.vercel.app/api/info?id=${id}`);
+      if (infoJson?.success) infoData = infoJson.data;
 
-      const infoRes = await fetch(
-        `https://henpro-api.vercel.app/api/info?id=${seriesId}`,
-        { cache: "no-store" }
-      );
-      const infoJson = await infoRes.json();
-
-      if (infoJson.success && infoJson.data) {
-        infoData = infoJson.data;
-      }
-    } // If id doesn't include "episode", fetch info first and then use first episode slug
-    else {
-      const infoRes = await fetch(`https://henpro-api.vercel.app/api/info?id=${id}`, {
-        cache: "no-store",
-      });
-      const infoJson = await infoRes.json();
-
-      if (infoJson.success && infoJson.data) {
-        infoData = infoJson.data; // pick the first episode slug from episodes array
-
-        const firstEpisodeSlug = infoJson.data.episodes?.[0]?.slug;
-
-        if (firstEpisodeSlug) {
-          const watchRes = await fetch(
-            `https://henpro-api.vercel.app/api/watch?id=${firstEpisodeSlug}`,
-            { cache: "no-store" }
-          ); // ... (rest of info-first logic)
-          const watchJson = await watchRes.json();
-
-          if (watchJson.success && watchJson.data) {
-            watchData = watchJson.data;
-          } else {
-            // couldn't fetch watch for first episode
-            console.warn(
-              "Failed to fetch watch data for first episode slug:",
-              firstEpisodeSlug
-            );
-          }
-        } else {
-          // no episodes available in info response
-          console.warn("No episodes found in info response for id:", id);
-        }
-      } else {
-        throw new Error("Invalid info data for id: " + id);
+      const firstEpisodeSlug = infoData?.episodes?.[0]?.slug;
+      if (firstEpisodeSlug) {
+        const watchJson = await safeFetchJSON(`https://henpro-api.vercel.app/api/watch?id=${firstEpisodeSlug}`);
+        if (watchJson?.success) watchData = watchJson.data;
       }
     }
-  } catch (err) { 
+  } catch (err) {
     console.error("Error fetching watch/info data:", err);
+  }
+
+  // --- Render fallback UI if no data ---
+  if (!watchData && !infoData) {
+    return (
+      <div className="p-8 text-center">
+        <h1 className="text-2xl font-bold mb-4">Video Unavailable</h1>
+        <p className="text-gray-500">
+          Sorry, we couldn’t load this video. Please try refreshing the page or check back later.
+        </p>
+      </div>
+    );
   }
 
   return (
     <>
       <WatchWrapper watchData={watchData} infoData={infoData} id={id} creator={creatorApiKey} />
-      <Advertize initialAdLink={dynamicAdLink} />   {" "}
+      <Advertize initialAdLink={dynamicAdLink} />
     </>
   );
 }
