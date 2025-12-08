@@ -41,7 +41,7 @@ export default async function Page({ searchParams }) {
   // --- End Dynamic Ad Link Logic ---
 
   // 🧠 Fetch from API
-  const res = await fetch("https://api.henpro.fun/api/homepage", {
+  const res = await fetch("https://henpro-api.vercel.app/api/homepage", {
     next: { revalidate: 3600 },
   });
   const recentEpi = await res.json();

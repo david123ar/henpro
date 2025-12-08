@@ -67,7 +67,7 @@ export default async function Page({ params, searchParams }) {
     // If the incoming id already targets an episode, fetch watch first
     if (id.includes("episode")) {
       const watchRes = await fetch(
-        `https://api.henpro.fun/api/watch?id=${id}`,
+        `https://henpro-api.vercel.app/api/watch?id=${id}`,
         { cache: "no-store" }
       ); // ... (rest of watch-first logic)
       const watchJson = await watchRes.json();
@@ -82,7 +82,7 @@ export default async function Page({ params, searchParams }) {
         watchData.seriesId || id.replace(/-episode-.*/, "-id-01");
 
       const infoRes = await fetch(
-        `https://api.henpro.fun/api/info?id=${seriesId}`,
+        `https://henpro-api.vercel.app/api/info?id=${seriesId}`,
         { cache: "no-store" }
       );
       const infoJson = await infoRes.json();
@@ -92,7 +92,7 @@ export default async function Page({ params, searchParams }) {
       }
     } // If id doesn't include "episode", fetch info first and then use first episode slug
     else {
-      const infoRes = await fetch(`https://api.henpro.fun/api/info?id=${id}`, {
+      const infoRes = await fetch(`https://henpro-api.vercel.app/api/info?id=${id}`, {
         cache: "no-store",
       });
       const infoJson = await infoRes.json();
@@ -104,7 +104,7 @@ export default async function Page({ params, searchParams }) {
 
         if (firstEpisodeSlug) {
           const watchRes = await fetch(
-            `https://api.henpro.fun/api/watch?id=${firstEpisodeSlug}`,
+            `https://henpro-api.vercel.app/api/watch?id=${firstEpisodeSlug}`,
             { cache: "no-store" }
           ); // ... (rest of info-first logic)
           const watchJson = await watchRes.json();

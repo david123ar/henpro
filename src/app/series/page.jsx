@@ -45,7 +45,7 @@ export default async function SeriesPage({ searchParams }) {
   // --- End Dynamic Ad Link Logic ---
 
   // --- Standard Series Data Fetch Logic ---
-  const apiUrl = `https://api.henpro.fun/api/series?page=${page}`;
+  const apiUrl = `https://henpro-api.vercel.app/api/series?page=${page}`;
 
   const res = await fetch(apiUrl, {
     next: { revalidate: 300 }, // revalidate every 5 min
