@@ -1,35 +1,27 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { connectDB } from "@/lib/mongoClient";
 import { compare } from "bcryptjs";
-import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import clientPromise from "@/lib/mongoClient";
-import { imageData } from "@/data/imageData"; // Import imageData
+import { adminDB } from "@/lib/firebaseAdmin";
+import { imageData } from "@/data/imageData";
 
+/* =========================
+   Helpers
+========================= */
 const getRandomImage = () => {
   const categories = Object.keys(imageData.hashtags);
-  const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+  const randomCategory =
+    categories[Math.floor(Math.random() * categories.length)];
   const images = imageData.hashtags[randomCategory].images;
   return images[Math.floor(Math.random() * images.length)];
 };
 
+/* =========================
+   Auth Options
+========================= */
 export const authOptions = {
-  adapter: MongoDBAdapter(clientPromise),
-  session: { strategy: "jwt" },
-
-  // ✅ Shared cookie for domain + subdomains
-  // cookies: {
-  //   sessionToken: {
-  //     name: `__Secure-next-auth.session-token`,
-  //     options: {
-  //       domain: ".shoko.fun", // Shared across shoko.fun & biolynk.shoko.fun
-  //       path: "/",
-  //       httpOnly: true,
-  //       sameSite: "lax",
-  //       secure: true,
-  //     },
-  //   },
-  // },
+  session: {
+    strategy: "jwt", // ✅ REQUIRED for Firestore
+  },
 
   providers: [
     CredentialsProvider({
@@ -42,63 +34,69 @@ export const authOptions = {
         bio: { label: "Bio", type: "text" },
         profileUpdate: { label: "Profile Update", type: "checkbox" },
       },
+
       async authorize(credentials) {
-        const db = await connectDB();
-        const users = db.collection("users");
+        const email = credentials.email;
+        if (!email) throw new Error("EMAIL_REQUIRED");
 
-        // Profile update flow
-        if (credentials.profileUpdate === "true") {
-          const user = await users.findOne({ email: credentials.email });
-          if (!user) {
-            const error = new Error("USER_NOT_FOUND");
-            error.code = "USER_NOT_FOUND";
-            throw error;
-          }
+        const userRef = adminDB.collection("users").doc(email);
+        const userSnap = await userRef.get();
 
-          const updatedUser = {
-            email: credentials.email,
-            username: credentials.username || user.username,
-            avatar: credentials.avatar || user.avatar,
-            bio: credentials.bio || user.bio,
-          };
-
-          await users.updateOne({ email: credentials.email }, { $set: updatedUser });
-
-          const avatar = updatedUser.avatar || getRandomImage();
-
-          return {
-            id: user._id,
-            email: updatedUser.email,
-            username: updatedUser.username,
-            avatar,
-            bio: updatedUser.bio,
-            timeOfJoining: user.timeOfJoining,
-          };
-        }
-
-        // Standard login
-        const user = await users.findOne({ email: credentials.email });
-        if (!user) {
+        if (!userSnap.exists) {
           const error = new Error("USER_NOT_FOUND");
           error.code = "USER_NOT_FOUND";
           throw error;
         }
 
-        const isValid = await compare(credentials.password, user.password);
+        const user = userSnap.data();
+
+        /* =========================
+           PROFILE UPDATE FLOW
+        ========================= */
+        if (credentials.profileUpdate === "true") {
+          const updatedUser = {
+            username: credentials.username || user.username,
+            avatar: credentials.avatar || user.avatar,
+            bio: credentials.bio || user.bio,
+          };
+
+          await userRef.update(updatedUser);
+
+          const avatar = updatedUser.avatar || getRandomImage();
+
+          return {
+            id: userSnap.id,
+            email,
+            username: updatedUser.username,
+            avatar,
+            bio: updatedUser.bio || "",
+            timeOfJoining: user.timeOfJoining,
+          };
+        }
+
+        /* =========================
+           LOGIN FLOW
+        ========================= */
+        const isValid = await compare(
+          credentials.password,
+          user.password
+        );
+
         if (!isValid) {
           const error = new Error("INVALID_CREDENTIALS");
           error.code = "INVALID_CREDENTIALS";
           throw error;
         }
 
-        const avatar = user.avatar || getRandomImage();
-        if (!user.avatar) {
-          await users.updateOne({ email: credentials.email }, { $set: { avatar } });
+        let avatar = user.avatar;
+        if (!avatar) {
+          avatar = getRandomImage();
+          await userRef.update({ avatar });
         }
 
         return {
-          id: user._id,
-          email: user.email,
+          id: userSnap.id,
+          email,
           username: user.username,
           avatar,
           bio: user.bio || "",
@@ -108,15 +106,18 @@ export const authOptions = {
     }),
   ],
 
+  /* =========================
+     Callbacks
+  ========================= */
   callbacks: {
     async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
+        token.email = user.email;
         token.username = user.username;
         token.avatar = user.avatar;
         token.bio = user.bio || "";
         token.timeOfJoining = user.timeOfJoining;
-        token.email = user.email;
       }
 
       if (trigger === "update" && session) {
@@ -131,18 +132,23 @@ export const authOptions = {
 
     async session({ session, token }) {
       session.user.id = token.id;
+      session.user.email = token.email;
       session.user.username = token.username;
       session.user.avatar = token.avatar;
       session.user.bio = token.bio || "";
       session.user.timeOfJoining = token.timeOfJoining;
-      session.user.email = token.email;
       return session;
     },
   },
 
   secret: process.env.NEXTAUTH_SECRET,
-  pages: { signIn: "/login" },
+  pages: {
+    signIn: "/login",
+  },
 };
 
+/* =========================
+   Handler
+========================= */
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };

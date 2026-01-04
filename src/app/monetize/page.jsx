@@ -53,8 +53,9 @@ export async function generateMetadata() {
 }
 
 // ----------------------------------------------------
-export default async function Monetize({searchParams}) {
-  const creatorApiKey = searchParams.creator; // ✨ Get the creator API key
+export default async function Monetize({ searchParams }) {
+  const searchParam = await searchParams
+  const creatorApiKey = searchParam.creator; // ✨ Get the creator API key
 
   // --- Start Dynamic Ad Link Logic ---
   const DEFAULT_AD_LINK =

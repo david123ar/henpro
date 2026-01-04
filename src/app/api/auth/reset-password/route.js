@@ -1,31 +1,40 @@
-import { connectDB } from "@/lib/mongoClient";
+import { adminDB } from "@/lib/firebaseAdmin";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
 
 export const POST = async (req) => {
   try {
     const { email } = await req.json();
-    const db = await connectDB();
-    const users = db.collection("users");
 
-    const user = await users.findOne({ email });
-    if (!user) {
-      return new Response(JSON.stringify({ message: "User not found" }), {
-        status: 404,
-        headers: { "Content-Type": "application/json" },
-      });
+    if (!email) {
+      return new Response(
+        JSON.stringify({ message: "Email is required" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
     }
 
-    // Generate reset token (random) and expiry (1 hour)
+    const userRef = adminDB.collection("users").doc(email);
+    const userSnap = await userRef.get();
+
+    if (!userSnap.exists) {
+      return new Response(
+        JSON.stringify({ message: "User not found" }),
+        { status: 404, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    // Generate reset token + expiry (1 hour)
     const resetToken = crypto.randomBytes(32).toString("hex");
-    const resetTokenExpiry = new Date(Date.now() + 3600000); // Store as Date object
+    const resetTokenExpiry = Date.now() + 3600000; // store as timestamp (ms)
 
-    await users.updateOne(
-      { email },
-      { $set: { resetToken, resetTokenExpiry } }
-    );
+    await userRef.update({
+      resetToken,
+      resetTokenExpiry,
+    });
 
-    // Send reset email
+    /* =========================
+       Send Reset Email
+    ========================= */
     const transporter = nodemailer.createTransport({
       service: "Gmail",
       auth: {
@@ -40,7 +49,13 @@ export const POST = async (req) => {
       from: process.env.EMAIL_USER,
       to: email,
       subject: "Password Reset Request",
-      html: `<p>Click <a href="${resetLink}">here</a> to reset your password.</p>`,
+      html: `
+        <p>You requested a password reset.</p>
+        <p>
+          Click <a href="${resetLink}">here</a> to reset your password.
+        </p>
+        <p>This link will expire in 1 hour.</p>
+      `,
     });
 
     return new Response(
@@ -48,9 +63,11 @@ export const POST = async (req) => {
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    console.error("Password reset error:", error);
+
+    return new Response(
+      JSON.stringify({ error: "Internal server error" }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
   }
 };

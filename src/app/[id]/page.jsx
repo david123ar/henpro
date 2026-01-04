@@ -1,98 +1,161 @@
 import BioClient from "@/components/BioClient/BioClient";
-import { connectDB } from "@/lib/mongoClient";
+import { adminDB } from "@/lib/firebaseAdmin";
 
-// Capitalize helper
+/* =========================
+   Helpers
+========================= */
 function capitalize(str) {
   if (!str) return "";
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-// Metadata
+/* =========================
+   Metadata
+========================= */
 export async function generateMetadata({ params }) {
-  const db = await connectDB();
-  const param = await params;
+  const username = params.id;
 
-  const userDoc = await db.collection("users").findOne({ username: param.id });
+  try {
+    const userSnap = await adminDB
+      .collection("users")
+      .doc(username)
+      .get();
 
-  const capitalizedUsername = capitalize(userDoc?.username);
+    if (userSnap.exists) {
+      const userData = userSnap.data();
+      const capitalized = capitalize(userData?.username || username);
+
+      return {
+        title: `${capitalized}'s Profile | Bio Link`,
+        description: `Check out ${capitalized}'s profile and explore their content.`,
+      };
+    }
+  } catch (_) {
+    // silent fallback
+  }
 
   return {
-    title: `${capitalizedUsername || "User"}'s Profile | Bio Link`,
-    description: `Check out ${capitalizedUsername}'s profile and explore their best content and links on Bio Link.`,
+    title: `${capitalize(username)}'s Profile | Bio Link`,
+    description: "Explore this user's Bio Link page.",
   };
 }
 
-// PAGE
+/* =========================
+   Page
+========================= */
 export default async function BioPage({ params }) {
-  const db = await connectDB();
   const username = params.id;
 
-  // 1. User
-  const userDoc = await db
-    .collection("users")
-    .findOne({ username }, { projection: { password: 0 } });
+  /* =========================
+     1. USER
+  ========================= */
+  let userSnap = null;
+  try {
+    userSnap = await adminDB
+      .collection("users")
+      .doc(username)
+      .get();
+  } catch (_) {}
 
-  if (!userDoc) {
-    return (
-      <div className="flex items-center justify-center h-screen text-white bg-black">
-        <p>User not found</p>
-      </div>
-    );
-  }
+  const userData = userSnap?.exists ? userSnap.data() : null;
 
-  const user = {
-    id: userDoc._id.toString(),
-    email: userDoc.email,
-    username: capitalize(userDoc.username),
-    avatar: userDoc.avatar,
-    bio: userDoc.bio || "",
-    referredBy: userDoc.referredBy || null,
-  };
-
-  // 2. Creator
-  const creatorDoc = await db.collection("creators").findOne({ username });
-
-  const creator = creatorDoc
+  const user = userData
     ? {
-        username: creatorDoc.username,
-        adsterraSmartlink: creatorDoc.adsterraSmartlink,
-        creatorApiKey: creatorDoc.creatorApiKey,
-        instagramId: creatorDoc.instagramId,
+        id: userSnap.id,
+        email: userData.email || "",
+        username: capitalize(userData.username),
+        avatar: userData.avatar || "",
+        bio: userData.bio || "",
+        referredBy: userData.referredBy || null,
       }
-    : null;
+    : {
+        id: "",
+        email: "",
+        username: capitalize(username),
+        avatar: "",
+        bio: "",
+        referredBy: null,
+      };
 
-  // 3. Accounts
-  const accountsDoc = await db.collection("accounts").findOne({});
+  /* =========================
+     2. CREATOR
+  ========================= */
+  let creator = null;
 
-  // Select account
+  try {
+    const creatorSnap = await adminDB
+      .collection("creators")
+      .doc(username)
+      .get();
+
+    if (creatorSnap.exists) {
+      const data = creatorSnap.data();
+      creator = {
+        username,
+        adsterraSmartlink: data.adsterraSmartlink || "",
+        creatorApiKey: data.creatorApiKey || "",
+        instagramId: data.instagramId || "",
+      };
+    }
+  } catch (_) {}
+
+  /* =========================
+     3. ACCOUNTS
+  ========================= */
+  let accountsDoc = null;
+
+  try {
+    const snap = await adminDB
+      .collection("accounts")
+      .doc("main") // single document pattern
+      .get();
+
+    if (snap.exists) {
+      accountsDoc = snap.data();
+    }
+  } catch (_) {}
+
   let selectedAccount = "account1";
   if (username === "SauseKing") selectedAccount = "account2";
   if (username === "SauseLord") selectedAccount = "account3";
 
-  // Extract that account data
   const accountData = accountsDoc?.[selectedAccount] || [];
 
-  // Format posts
   const accounts = {
     accountName: selectedAccount,
     batches: accountData.map((batch) => ({
-      batch: batch.batch,
-      startDate: batch.startDate,
-      posts: batch.posts
+      batch: batch.batch || "",
+      startDate: batch.startDate || null,
+      posts: (batch.posts || [])
         .map((post) => ({
           ...post,
           postingTime: post.postingTime
             ? new Date(post.postingTime).toISOString()
             : null,
         }))
-        .reverse(), // REVERSED FIX
+        .reverse(),
     })),
   };
 
-  // 4. Design
-  const linksDoc = await db.collection("links").findOne({ _id: username });
-  const design = linksDoc?.design || "";
+  /* =========================
+     4. DESIGN
+  ========================= */
+  let design = "";
 
+  try {
+    const linksSnap = await adminDB
+      .collection("links")
+      .doc(username)
+      .get();
+
+    if (linksSnap.exists) {
+      design = linksSnap.data()?.design || "";
+    }
+  } catch (_) {}
+
+  /* =========================
+     Render
+  ========================= */
   return (
     <BioClient
       user={user}

@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { connectDB } from "@/lib/mongoClient";
+import { adminDB } from "@/lib/firebaseAdmin";
 
 const COLLECTION_NAME = "watchProgress";
 
 /**
- * GET: Fetches watch progress for a video.
+ * GET: Fetch watch progress for a specific video.
  * Query: ?contentKey=<video-id>
  */
 export async function GET(request) {
@@ -26,23 +26,26 @@ export async function GET(request) {
   }
 
   try {
-    const db = await connectDB();
-    const progress = await db.collection(COLLECTION_NAME).findOne({
-      userId: session.user.id,
-      contentKey: contentKey,
-    });
+    const progressRef = adminDB
+      .collection(COLLECTION_NAME)
+      .where("userId", "==", session.user.id)
+      .where("contentKey", "==", contentKey)
+      .limit(1);
 
-    // Successfully return the watch progress data, including the totalDuration
+    const snapshot = await progressRef.get();
+
+    const progress = snapshot.docs[0]?.data() || {};
+
     return NextResponse.json({
-      currentTime: progress?.currentTime || 0,
-      totalDuration: progress?.totalDuration || 0,
-      title: progress?.title || null,
-      poster: progress?.poster || null,
-      parentContentId: progress?.parentContentId || null,
-      episodeNo: progress?.episodeNo,
+      currentTime: progress.currentTime || 0,
+      totalDuration: progress.totalDuration || 0,
+      title: progress.title || null,
+      poster: progress.poster || null,
+      parentContentId: progress.parentContentId || null,
+      episodeNo: progress.episodeNo || null,
     });
   } catch (error) {
-    console.error("DB Error on GET progress:", error);
+    console.error("Firestore GET progress error:", error);
     return NextResponse.json(
       { message: "Internal Server Error" },
       { status: 500 }
@@ -51,8 +54,7 @@ export async function GET(request) {
 }
 
 /**
- * POST: Saves/Updates watch progress and metadata.
- * Body: { contentKey, currentTime, totalDuration, title, poster, parentContentId }
+ * POST: Saves or updates watch progress and metadata.
  */
 export async function POST(request) {
   const session = await getServerSession(authOptions);
@@ -63,14 +65,13 @@ export async function POST(request) {
   const {
     contentKey,
     currentTime,
-    totalDuration, // Destructure the new field
+    totalDuration,
     title,
     poster,
     parentContentId,
     episodeNo,
   } = await request.json();
 
-  // Validate all required fields, including totalDuration
   if (
     !contentKey ||
     currentTime === undefined ||
@@ -88,29 +89,28 @@ export async function POST(request) {
   }
 
   try {
-    const db = await connectDB();
-
-    const updateData = {
-      currentTime: Number(currentTime),
-      totalDuration: Number(totalDuration), // Save duration to the database
-      title: title,
-      poster: poster,
-      parentContentId: parentContentId || null,
-      episodeNo: episodeNo,
-      updatedAt: new Date(),
-    };
-
-    await db
+    const progressRef = adminDB
       .collection(COLLECTION_NAME)
-      .updateOne(
-        { userId: session.user.id, contentKey: contentKey },
-        { $set: updateData },
-        { upsert: true }
-      );
+      .doc(`${session.user.id}_${contentKey}`); // Unique ID per user+video
+
+    await progressRef.set(
+      {
+        userId: session.user.id,
+        contentKey,
+        currentTime: Number(currentTime),
+        totalDuration: Number(totalDuration),
+        title,
+        poster,
+        parentContentId: parentContentId || null,
+        episodeNo: episodeNo || null,
+        updatedAt: new Date(),
+      },
+      { merge: true } // Upsert behavior
+    );
 
     return NextResponse.json({ message: "Progress saved successfully" });
   } catch (error) {
-    console.error("DB Error on POST progress:", error);
+    console.error("Firestore POST progress error:", error);
     return NextResponse.json(
       { message: "Internal Server Error" },
       { status: 500 }
@@ -119,8 +119,7 @@ export async function POST(request) {
 }
 
 /**
- * DELETE: Clears progress.
- * Body: { contentKey }
+ * DELETE: Clears watch progress for a specific video.
  */
 export async function DELETE(request) {
   const session = await getServerSession(authOptions);
@@ -138,15 +137,15 @@ export async function DELETE(request) {
   }
 
   try {
-    const db = await connectDB();
-    await db.collection(COLLECTION_NAME).deleteOne({
-      userId: session.user.id,
-      contentKey: contentKey,
-    });
+    const progressRef = adminDB
+      .collection(COLLECTION_NAME)
+      .doc(`${session.user.id}_${contentKey}`);
+
+    await progressRef.delete();
 
     return NextResponse.json({ message: "Progress cleared successfully" });
   } catch (error) {
-    console.error("DB Error on DELETE progress:", error);
+    console.error("Firestore DELETE progress error:", error);
     return NextResponse.json(
       { message: "Internal Server Error" },
       { status: 500 }

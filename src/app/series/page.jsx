@@ -1,14 +1,12 @@
-// app/series/page.js (or app/page.js, based on your structure)
-
-// Assuming connectDB is set up in "@/lib/mongoClient"
-import { connectDB } from "@/lib/mongoClient";
+// app/series/page.js (or app/page.js)
 import Advertize from "@/components/Advertize/Advertize";
-// import Navbar from "@/components/Navbar/Navbar"; // Kept since it's in the original import list
 import Series from "@/components/Series/Series";
+import { adminDB } from "@/lib/firebaseAdmin"; // Firestore instance
 
 export default async function SeriesPage({ searchParams }) {
-  const page = searchParams.page || 1;
-  const creatorApiKey = searchParams.creator; // ✨ Get the creator API key
+  const searchParam = await searchParams
+  const page = searchParam.page || 1;
+  const creatorApiKey = searchParam.creator; // Get the creator API key
 
   // --- Start Dynamic Ad Link Logic ---
   const DEFAULT_AD_LINK =
@@ -17,29 +15,24 @@ export default async function SeriesPage({ searchParams }) {
 
   if (creatorApiKey) {
     try {
-      // 1. Connect to MongoDB
-      const db = await connectDB();
-      // Assuming your collection is named 'creators'
-      const collection = db.collection("creators");
+      // 1. Reference the creator document in Firestore
+      // Assuming document ID is the username; otherwise use a query
+      const docRef = adminDB.collection("creators").doc(creatorApiKey);
+      const docSnapshot = await docRef.get();
 
-      // 2. Fetch the creator data
-      const creatorData = await collection.findOne(
-        { username: creatorApiKey },
-        // Project to only include the smartlink
-        { projection: { adsterraSmartlink: 1, _id: 0 } }
-      );
-
-      // 3. Update the ad link if found
-      if (creatorData && creatorData.adsterraSmartlink) {
-        dynamicAdLink = creatorData.adsterraSmartlink;
+      if (docSnapshot.exists) {
+        const creatorData = docSnapshot.data();
+        if (creatorData?.adsterraSmartlink) {
+          dynamicAdLink = creatorData.adsterraSmartlink;
+        }
       }
     } catch (error) {
       console.error(
-        "MongoDB fetch failed for creator on main series page:",
+        "Firestore fetch failed for creator on main series page:",
         creatorApiKey,
         error
       );
-      // Fallback to DEFAULT_AD_LINK
+      // fallback to DEFAULT_AD_LINK
     }
   }
   // --- End Dynamic Ad Link Logic ---
@@ -60,7 +53,11 @@ export default async function SeriesPage({ searchParams }) {
 
   return (
     <div className="page-wrapper">
-      <Series data={data || []} totalPages={data?.totalPages || 1} creator={creatorApiKey}/>
+      <Series
+        data={data || []}
+        totalPages={data?.totalPages || 1}
+        creator={creatorApiKey}
+      />
       {/* 🌟 Pass the dynamic ad link to the Advertize component */}
       <Advertize initialAdLink={dynamicAdLink} />
     </div>
