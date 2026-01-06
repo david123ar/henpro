@@ -10,16 +10,16 @@ import MonetizeContent from "@/components/MonetizeContent/MonetizeContent";
 export async function generateMetadata() {
   return {
     title:
-      "Monetize Your Creator Profile | Earn Money from Views & Traffic - Henpro",
+      "Monetize Your Creator Profile | Earn Money from Views & Traffic - Hanimetv",
     description:
-      "Join Henpro's monetization program and start earning from your content. Connect your Adsterra Smart Link and API key, track analytics, and get paid for every view you bring.",
+      "Join Hanimetv's monetization program and start earning from your content. Connect your Adsterra Smart Link and API key, track analytics, and get paid for every view you bring.",
     openGraph: {
-      title: "Monetize Your Henpro Creator Profile | Earn from Views & Clicks",
+      title: "Monetize Your Hanimetv Creator Profile | Earn from Views & Clicks",
       description:
-        "Set up your Adsterra Smart Link and API integration to start earning. Real-time analytics, payout tracking, and easy setup for all creators on Henpro.",
-      url: "https://henpro.fun/monetize",
+        "Set up your Adsterra Smart Link and API integration to start earning. Real-time analytics, payout tracking, and easy setup for all creators on Hanimetv.",
+      url: "https://hanimetv.fun/monetize",
       type: "website",
-      siteName: "Henpro",
+      siteName: "Hanimetv",
       // images: [
       //   {
       //     url: "https://henpro.fun/og/monetize-banner.jpg",
@@ -37,17 +37,19 @@ export async function generateMetadata() {
     //   images: ["https://henpro.fun/og/monetize-banner.jpg"],
     // },
     keywords: [
-      "henpro",
-      "henpro monetization",
+      "hanimetv",
+      "hanime",
+      "tv",
+      "hanime monetization",
       "creator earnings",
       "adsterra smart link",
-      "henpro dashboard",
+      "hanimetv dashboard",
       "earn money online",
       "creator program",
-      "henpro analytics",
+      "hanimetv analytics",
     ],
     alternates: {
-      canonical: "https://henpro.fun/monetize",
+      canonical: "https://hanimetv.fun/monetize",
     },
   };
 }
@@ -59,7 +61,7 @@ export default async function Monetize({ searchParams }) {
 
   // --- Start Dynamic Ad Link Logic ---
   const DEFAULT_AD_LINK =
-    "https://contemplatewaryheadquarter.com/ukqgqrv4n?key=acf2a1b713094b78ec1cc21761e9b149";
+    "https://www.effectivegatecpm.com/z67nn0nfnb?key=047c39737c61fbc71ce51ba3d9ff8923";
   let dynamicAdLink = DEFAULT_AD_LINK;
 
   if (creatorApiKey) {

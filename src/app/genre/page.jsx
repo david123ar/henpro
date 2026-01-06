@@ -12,7 +12,7 @@ export default async function SeriesPage({ searchParams }) {
 
   // --- Start Creator Ad Link Logic ---
   const DEFAULT_AD_LINK =
-    "https://contemplatewaryheadquarter.com/ukqgqrv4n?key=acf2a1b713094b78ec1cc21761e9b149";
+    "https://www.effectivegatecpm.com/z67nn0nfnb?key=047c39737c61fbc71ce51ba3d9ff8923";
   let dynamicAdLink = DEFAULT_AD_LINK;
 
   if (creatorApiKey) {

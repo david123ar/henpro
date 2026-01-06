@@ -1,7 +1,7 @@
 import "./globals.css";
 import Script from "next/script";
 
-const siteName = process.env.NEXT_PUBLIC_SITE_NAME || "Henpro";
+const siteName = process.env.NEXT_PUBLIC_SITE_NAME || "Hanimetv";
 
 export const metadata = {
   title: `Watch Free Hentai Video Streams Online in 720p , 1080p HD - ${siteName}`,

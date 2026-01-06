@@ -35,7 +35,7 @@ export async function generateMetadata({ params }) {
   const formattedTitle = capitalizeWords(id);
 
   return {
-    title: `Watch ${formattedTitle} Hentai Video Streams Online in 720p , 1080p HD - Henpro`,
+    title: `Watch ${formattedTitle} Hentai Video Streams Online in 720p , 1080p HD - Hanimetv`,
     description: `Enjoy your unlimited hentai & anime collection. We are the definitive source for the best curated 720p / 1080p HD hentai videos, viewable by mobile phone and tablet, for free.`,
   };
 }
@@ -52,7 +52,7 @@ export default async function Page({ params, searchParams }) {
 
   // --- Dynamic Ad Link ---
   const DEFAULT_AD_LINK =
-    "https://contemplatewaryheadquarter.com/ukqgqrv4n?key=acf2a1b713094b78ec1cc21761e9b149";
+    "https://www.effectivegatecpm.com/z67nn0nfnb?key=047c39737c61fbc71ce51ba3d9ff8923";
   let dynamicAdLink = DEFAULT_AD_LINK;
 
   if (creatorApiKey) {
