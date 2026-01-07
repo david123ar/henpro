@@ -36,7 +36,7 @@ export default async function SeriesPage({ searchParams }) {
   // --- End Creator Ad Link Logic ---
 
   // --- Start Genre Data Fetch Logic ---
-  const apiUrl = `https://henpro-api.vercel.app/api/genre?genre=${genre}&page=${page}`;
+  const apiUrl = `https://henpro-api-three.vercel.app/api/genre?genre=${genre}&page=${page}`;
 
   const res = await fetch(apiUrl, {
     next: { revalidate: 300 }, // revalidate every 5 min

@@ -39,7 +39,7 @@ export default async function SearchPage({ searchParams }) {
 
   // --- Standard Search Data Fetch Logic ---
   const encodedQ = encodeURIComponent(q);
-  const apiUrl = `https://henpro-api.vercel.app/api/search?q=${encodedQ}`;
+  const apiUrl = `https://henpro-api-three.vercel.app/api/search?q=${encodedQ}`;
 
   const res = await fetch(apiUrl, {
     next: { revalidate: 300 }, // revalidate every 5 min

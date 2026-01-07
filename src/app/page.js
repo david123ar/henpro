@@ -44,7 +44,7 @@ export default async function Page({ searchParams }) {
   /* ==========================
      Fetch Homepage API Data
   ========================== */
-  const res = await fetch("https://henpro-api.vercel.app/api/homepage", {
+  const res = await fetch("https://henpro-api-three.vercel.app/api/homepage", {
     next: { revalidate: 3600 },
   });
   const recentEpi = await res.json();

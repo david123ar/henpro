@@ -75,20 +75,20 @@ export default async function Page({ params, searchParams }) {
   // --- Fetch Watch & Info Data ---
   try {
     if (id.includes("episode")) {
-      const watchJson = await safeFetchJSON(`https://henpro-api.vercel.app/api/watch?id=${id}`);
+      const watchJson = await safeFetchJSON(`https://henpro-api-three.vercel.app/api/watch?id=${id}`);
       if (watchJson?.success) watchData = watchJson.data;
 
       const seriesId = watchData?.seriesId || id.replace(/-episode-.*/, "-id-01");
-      const infoJson = await safeFetchJSON(`https://henpro-api.vercel.app/api/info?id=${seriesId}`);
+      const infoJson = await safeFetchJSON(`https://henpro-api-three.vercel.app/api/info?id=${seriesId}`);
       if (infoJson?.success) infoData = infoJson.data;
 
     } else {
-      const infoJson = await safeFetchJSON(`https://henpro-api.vercel.app/api/info?id=${id}`);
+      const infoJson = await safeFetchJSON(`https://henpro-api-three.vercel.app/api/info?id=${id}`);
       if (infoJson?.success) infoData = infoJson.data;
 
       const firstEpisodeSlug = infoData?.episodes?.[0]?.slug;
       if (firstEpisodeSlug) {
-        const watchJson = await safeFetchJSON(`https://henpro-api.vercel.app/api/watch?id=${firstEpisodeSlug}`);
+        const watchJson = await safeFetchJSON(`https://henpro-api-three.vercel.app/api/watch?id=${firstEpisodeSlug}`);
         if (watchJson?.success) watchData = watchJson.data;
       }
     }
