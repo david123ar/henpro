@@ -5,7 +5,7 @@ import Image from "next/image";
 const Footer = () => {
   // Assuming process.env.NEXT_PUBLIC_SITE_NAME will resolve to 'Henpro.fun'
   // or a similar string that includes "pro" or "tv" logic for rendering
-  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || "Henpro";
+  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || "Hanimetv";
 
   // Helper function to render the stylized site name text
   const renderSiteName = (isFooterLogo = false) => {
